@@ -6,10 +6,12 @@ var app = express();
 var http = require('http').createServer(app);
 var io = sio(http);
 
-var port = process.env.PORT || 8080; //runs on heroku or localhost:8080
-
-//listen for port
+// runs on heroku or localhost:8080
+var port = process.env.PORT || 8080;
 http.listen(port);
+
+// set PASSWORD in heroku config variables
+var PASSWORD = process.env.PASSWORD || "pass";
 
 /*
 const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432';
@@ -24,7 +26,7 @@ pg.connect(connectionString, function(err, client, done) {
 });
 */
 
-app.get('/', function(req, res){ //when someone connects initially, send the index
+app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
@@ -45,13 +47,47 @@ app.get('/calculate.js', function(req, res){
 });
 
 io.on("connection", function(socket){
+  socket.auth = false;
   console.log("socket connected");
 
-  socket.on("message", function(message){
-    console.log(message);
+  socket.on("login", function(pass){
+    console.log("login attempt with password: "+pass);
+    if(pass === PASSWORD){
+      socket.auth = true;
+    }else{
+      socket.emit("login failed");
+    }
+  });
+
+  socket.on("data", function(){
+    if(socket.auth){
+      console.log("sending data");
+    }else{
+      socket.emit("login failed");
+    }
   });
 
   socket.on("disconnect", function(){
     console.log("socket disconnected");
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
