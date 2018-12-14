@@ -1,0 +1,18 @@
+{
+  "name": "surge-calculator",
+  "version": "2.0.0",
+  "description": "For calculating surge levels in hosptial emergency departments",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vincent Portelli",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4",
+    "http": "0.0.0",
+    "nodemailer": "^4.7.0",
+    "pg": "^7.7.1",
+    "socket.io": "^2.2.0"
+  }
+}
