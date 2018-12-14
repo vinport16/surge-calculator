@@ -54,14 +54,15 @@ io.on("connection", function(socket){
     console.log("login attempt with password: "+pass);
     if(pass === PASSWORD){
       socket.auth = true;
+      socket.emit("login success");
     }else{
       socket.emit("login failed");
     }
   });
 
-  socket.on("data", function(){
+  socket.on("get setup", function(){
     if(socket.auth){
-      console.log("sending data");
+      socket.emit("contact",{id:0,name:"Vincent",email:"vinport16@gmail.com",threshold:2});
     }else{
       socket.emit("login failed");
     }

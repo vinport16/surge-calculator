@@ -27,8 +27,14 @@ var socket = io();
 
 socket.emit("login",prompt("password"));
 
-socket.on("login failed",function(){
+socket.on("login failed", function(){
   socket.emit("login",prompt("password"));
 });
 
-socket.emit("data");
+socket.on("login success", function(){
+  socket.emit("get setup");
+});
+
+socket.on("contact",function(contact){
+  show_contact(contact);
+});

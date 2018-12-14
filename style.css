@@ -1,0 +1,49 @@
+body{
+  font-family: sans-serif;
+  font-size: 14pt;
+}
+
+.calc-shell{
+  text-align: center;
+}
+
+.calculator{
+  display:inline-block;
+  width:50%;
+}
+
+.data-shell{
+  text-align: center;
+}
+
+.data{
+  display: inline-block;
+}
+
+.contact-shell{
+  text-align: center;
+}
+
+.contact{
+  width:40%;
+  display: inline-block;
+  border-radius: 5px;
+}
+
+.contact:nth-child(odd){
+  background-color: lightblue;
+}
+
+.contact:nth-child(even){
+  background-color: lightgreen;
+}
+
+button, input{
+  height:30px;
+  font-family: sans-serif;
+  font-size: 14pt;
+}
+
+input[type='number']{
+  width:70px;
+}

@@ -7,8 +7,41 @@
 </head>
 
 <body>
-  <h1>Surge Calculator</h1>
-  <p>version 2.0 by Vincent</p>
+  <div class="calc-shell">
+    <h1>Surge Calculator</h1>
+    <p>version 2.0</p>
+    <div class="calculator">
+      <hr>
+      <input type="number" min="0" id="census"><br>
+      AM Hosptial Census
+      <hr>
+      <input type="number" min="0" id="census"><br>
+      AM Hosptial Census
+      <hr>
+      <input type="number" min="0" id="census"><br>
+      AM Hosptial Census
+      <hr>
+      <button id="submit">Submit</button>
+    </div>
+  </div>
+  <br>
+  <br>
+  <hr>
+
+  <div class="data-shell">
+    <div class="data" id="data">
+      Data Here
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="contact-shell">
+    <div class="contacts" id="contacts">
+      Contacts List Here
+    </div>
+  </div>
+
 </body>
 
 <script src="/socket.io/socket.io.js"></script>
