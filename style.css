@@ -38,7 +38,10 @@ body{
   background-color: lightgreen;
 }
 
-button, input{
+.spacer{
+  height:5px;
+}
+button, input, select{
   height:30px;
   font-family: sans-serif;
   font-size: 14pt;

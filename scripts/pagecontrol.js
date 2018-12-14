@@ -28,14 +28,12 @@ surge_level_select = function(id, level){
 }
 
 show_contact = function(contact){
-  html  = "<br><div class='contact' id='contact_"+contact.id+"'>";
+  html  = "<br><div class='spacer'></div><div class='contact' id='contact_"+contact.id+"'>";
   html += contact.name+"<br>";
   html += contact.email+"<br>";
-  html += "alert when:"+surge_level_select("contact_"+contact.id+"_threshold", contact.threshold) + "<br>";
+  html += "alert when "+surge_level_select("contact_"+contact.id+"_threshold", contact.threshold) + "<br>";
   html += "<button onclick='update_contact("+contact.id+")'>Update</button>";
   html += "<button onclick='delete_contact("+contact.id+")'>Delete</button>";
   html += "</div>";
-  console.log(contact.name);
-  document.getElementById("data").html = contact.email;
   document.getElementById("contacts").insertAdjacentHTML("beforeend", html);
 }

@@ -63,6 +63,8 @@ io.on("connection", function(socket){
   socket.on("get setup", function(){
     if(socket.auth){
       socket.emit("contact",{id:0,name:"Vincent",email:"vinport16@gmail.com",threshold:2});
+      socket.emit("contact",{id:0,name:"Sarah",email:"sxd100@case.edu",threshold:3});
+      socket.emit("contact",{id:0,name:"Dave",email:"dave.portelli@gmail.com",threshold:1});
     }else{
       socket.emit("login failed");
     }
