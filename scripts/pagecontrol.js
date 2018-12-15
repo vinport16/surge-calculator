@@ -37,3 +37,28 @@ show_contact = function(contact){
   html += "</div>";
   document.getElementById("contacts").insertAdjacentHTML("beforeend", html);
 }
+
+update_contact = function(id){
+  threshold = document.getElementById("contact_"+id+"_threshold").value;
+  socket.emit("update contact",{id:id,threshold:threshold});
+}
+
+delete_contact = function(id){
+  if(confirm("Are you sure that you want to delete this contact?")){
+    socket.emit("delete contact",id); 
+    contact = document.getElementById("contact_"+id);
+    contact.parentNode.removeChild(contact);
+  }
+}
+
+create_contact = function(contact){
+
+}
+
+
+
+
+
+
+
+

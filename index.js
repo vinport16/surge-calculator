@@ -1,6 +1,7 @@
 var express = require('express');
 var sio = require('socket.io');
 var pg = require('pg');
+var net = require('net');
 var nodemailer = require('nodemailer');
 var app = express();
 var http = require('http').createServer(app);
@@ -13,18 +14,25 @@ http.listen(port);
 // set PASSWORD in heroku config variables
 var PASSWORD = process.env.PASSWORD || "pass";
 
-/*
-const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432';
-
-const client = new pg.Client(connectionString);
-client.connect();
-
-pg.connect(connectionString, function(err, client, done) {
-  client.query('CREATE TABLE IF NOT EXISTS data2(id SERIAL PRIMARY KEY, date VARCHAR(60) not null, box0 INT, box1 INT, box2 INT, box3 INT, box4 INT, box5 INT, box6 INT, box7 INT, box8 INT, total INT, color VARCHAR(10), initials VARCHAR(3) )', function(err, result) {
+// initial database connection settings
+var config = {
+    "host": process.env.DATABASE_URL || 'localhost',
+    "port": 5432,
+    "database": "vincent",
+    "stream": new net.Stream()
+};
+var pool = new pg.Pool(config);
+pool.connect(function(err, client, done){
+  if(err) {
+    return console.error('error fetching client from pool', err);
+  }
+  // if there is not a contacts table, then create one
+  client.query('CREATE TABLE IF NOT EXISTS contacts(id SERIAL PRIMARY KEY, name VARCHAR, email VARCHAR, threshold INT)', function(err, result){
     done();
   });
 });
-*/
+pool.end();
+
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
@@ -65,6 +73,75 @@ io.on("connection", function(socket){
       socket.emit("contact",{id:0,name:"Vincent",email:"vinport16@gmail.com",threshold:2});
       socket.emit("contact",{id:0,name:"Sarah",email:"sxd100@case.edu",threshold:3});
       socket.emit("contact",{id:0,name:"Dave",email:"dave.portelli@gmail.com",threshold:1});
+    }else{
+      socket.emit("login failed");
+    }
+  });
+
+  socket.on("get contacts", function(){
+    if(socket.auth){
+
+      config["stream"] = new net.Stream();
+      pool = new pg.Pool(config);
+      pool.connect(function(err, client, done){
+        if(err) {
+          return console.error('error fetching client from pool', err);
+        }
+        client.query('SELECT * FROM contacts ORDER BY id', function(err, result) {
+          contacts = result.rows;
+
+          for(var i = 0; i < contacts.length; i++){
+            socket.emit("contact",{id:contacts[i].id,name:contacts[i].name,email:contacts[i].email,threshold:contacts[i].threshold});
+          }
+
+          done();
+        });
+      });
+      pool.end();
+
+    }else{
+      socket.emit("login failed");
+    }
+  });
+
+  socket.on("update contact", function(contact){
+    if(socket.auth){
+
+      id = contact.id;
+      threshold = contact.threshold;
+
+      config["stream"] = new net.Stream();
+      pool = new pg.Pool(config);
+      pool.connect(function(err, client, done){
+        if(err) {
+          return console.error('error fetching client from pool', err);
+        }
+        client.query('UPDATE contacts SET threshold = $1 WHERE id = $2', [threshold,id], function(err, result) {
+          done();
+        });
+      });
+      pool.end();
+
+    }else{
+      socket.emit("login failed");
+    }
+  });
+
+  socket.on("delete contact", function(id){
+    if(socket.auth){
+
+      config["stream"] = new net.Stream();
+      pool = new pg.Pool(config);
+      pool.connect(function(err, client, done){
+        if(err) {
+          return console.error('error fetching client from pool', err);
+        }
+        client.query('DELETE FROM contacts WHERE id = $1', [id], function(err, result) {
+          done();
+        });
+      });
+      pool.end();
+
     }else{
       socket.emit("login failed");
     }

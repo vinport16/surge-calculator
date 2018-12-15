@@ -32,7 +32,7 @@ socket.on("login failed", function(){
 });
 
 socket.on("login success", function(){
-  socket.emit("get setup");
+  socket.emit("get contacts");
 });
 
 socket.on("contact",function(contact){

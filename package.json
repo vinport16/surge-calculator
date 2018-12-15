@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.16.4",
     "http": "0.0.0",
+    "net": "^1.0.2",
     "nodemailer": "^4.7.0",
     "pg": "^7.7.1",
     "socket.io": "^2.2.0"
