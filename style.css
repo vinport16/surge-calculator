@@ -9,7 +9,7 @@ body{
 
 .calculator{
   display:inline-block;
-  width:50%;
+  width:40%;
 }
 
 .data-shell{
@@ -25,7 +25,7 @@ body{
 }
 
 .contact{
-  width:40%;
+  width:30%;
   display: inline-block;
   border-radius: 5px;
 }
@@ -41,12 +41,36 @@ body{
 .spacer{
   height:5px;
 }
+
 button, input, select{
   height:30px;
   font-family: sans-serif;
   font-size: 14pt;
 }
 
+/* gets rid of those arrows on number inputs */
+/* firefox */
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+/* everyone else */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
 input[type='number']{
   width:70px;
+}
+
+input.initials{
+  width:3em;
+}
+
+input.time{
+  width:2em;
+}
+
+:disabled{
+  background-color: lightgray;
 }

@@ -28,6 +28,9 @@ pool.connect(function(err, client, done){
   }
   // if there is not a contacts table, then create one
   client.query('CREATE TABLE IF NOT EXISTS contacts(id SERIAL PRIMARY KEY, name VARCHAR, email VARCHAR, threshold INT)', function(err, result){
+  });
+  // if there is not a data table, then create one
+  client.query('CREATE TABLE IF NOT EXISTS data(id SERIAL PRIMARY KEY, census INT, arrivals3hours INT, arrivals1pm INT, admitNoBed INT, icuBeds INT, waiting INT, waitTime INT, esi2noBed INT, critCarePatients INT, surgeScore INT, surgeLevel INT, diversion VARCHAR(15), initials VARCHAR(3), concordance INT, notes TEXT, date TIMESTAMPTZ)', function(err, result){
     done();
   });
 });
@@ -78,6 +81,10 @@ io.on("connection", function(socket){
     }
   });
 
+
+  // ~~ INTERACTIONS ON CONTACTS TABLE ~~ //
+
+
   socket.on("get contacts", function(){
     if(socket.auth){
 
@@ -91,7 +98,7 @@ io.on("connection", function(socket){
           contacts = result.rows;
 
           for(var i = 0; i < contacts.length; i++){
-            socket.emit("contact",{id:contacts[i].id,name:contacts[i].name,email:contacts[i].email,threshold:contacts[i].threshold});
+            socket.emit("contact",contacts[i]);
           }
 
           done();
@@ -117,6 +124,7 @@ io.on("connection", function(socket){
           return console.error('error fetching client from pool', err);
         }
         client.query('UPDATE contacts SET threshold = $1 WHERE id = $2', [threshold,id], function(err, result) {
+          console.log("updated contact "+contact.id);
           done();
         });
       });
@@ -137,6 +145,7 @@ io.on("connection", function(socket){
           return console.error('error fetching client from pool', err);
         }
         client.query('DELETE FROM contacts WHERE id = $1', [id], function(err, result) {
+          console.log("deleted contact "+id);
           done();
         });
       });
@@ -146,6 +155,86 @@ io.on("connection", function(socket){
       socket.emit("login failed");
     }
   });
+
+  socket.on("create contact", function(contact){
+    if(socket.auth){
+
+      config["stream"] = new net.Stream();
+      pool = new pg.Pool(config);
+      pool.connect(function(err, client, done){
+        if(err) {
+          return console.error('error fetching client from pool', err);
+        }
+        client.query('INSERT INTO contacts (name, email, threshold) VALUES ($1, $2, $3) RETURNING id', [contact.name, contact.email, contact.threshold], function(err, result) {
+          console.log("created contact "+contact.name);
+          contact.id = result.rows[0].id;
+          socket.emit("contact",contact);
+          done();
+        });
+      });
+      pool.end();
+
+    }else{
+      socket.emit("login failed");
+    }
+  });
+
+
+  // ~~ INTERACTIONS ON DATA TABLE ~~ //
+
+
+  socket.on("create row", function(row){
+    if(socket.auth){
+
+      config["stream"] = new net.Stream();
+      pool = new pg.Pool(config);
+      pool.connect(function(err, client, done){
+        if(err) {
+          return console.error('error fetching client from pool', err);
+        }
+        client.query('INSERT INTO data (census, arrivals3hours, arrivals1pm, admitNoBed, icuBeds, waiting, waitTime, esi2noBed, critCarePatients, surgeScore, surgeLevel, diversion, initials, concordance, notes, date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)',
+                     [row.census, row.arrivals3hours, row.arrivals1pm, row.admitNoBed, row.icuBeds, row.waiting, row.waitTime, row.esi2noBed, row.critCarePatients, row.surgeScore, row.surgeLevel, row.diversion, row.initials, row.concordance, row.notes, new Date()], function(err, result) {
+          if(err){
+            console.log(err);
+          }else{
+            console.log("logged data row with surge level "+row.surgeLevel);
+          }
+          done();
+        });
+      });
+      pool.end();
+
+    }else{
+      socket.emit("login failed");
+    }
+  });
+
+  socket.on("get last row", function(){
+    if(socket.auth){
+      config["stream"] = new net.Stream();
+      pool = new pg.Pool(config);
+      pool.connect(function(err, client, done){
+        if(err) {
+          return console.error('error fetching client from pool', err);
+        }
+        client.query("SELECT * FROM data ORDER BY ID DESC LIMIT 1", function(err, result) {
+          row = result.rows[0];
+          if(row == undefined){
+            console.log("no rows to retrieve");
+            socket.emit("last row",false);
+          }else{
+            console.log("retrieved row "+row.id+": Score="+row.surgeScore);
+            socket.emit("last row",row);
+          }
+          done();
+        });
+      });
+      pool.end();
+    }else{
+      socket.emit("login failed");
+    }
+  });
+
 
   socket.on("disconnect", function(){
     console.log("socket disconnected");

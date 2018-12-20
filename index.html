@@ -12,14 +12,59 @@
     <p>version 2.0</p>
     <div class="calculator">
       <hr>
-      <input type="number" min="0" id="census"><br>
+      <!--
+      row.census, row.arrivals3hours, row.arrivals1pm, row.admitNoBed, row.icuBeds, row.waiting, row.waitTime, row.esi2noBed, row.critCarePatients, row.surgeLevel, row.diversion, row.initials, row.concordance, row.notes
+      -->
+      <input type="number" min="0" max="600" id="census"><br>
       AM Hosptial Census
       <hr>
-      <input type="number" min="0" id="census"><br>
-      AM Hosptial Census
+      <input type="number" min="0" max="79" id="arrivals3hours"><br>
+      Arrivals in the last 3 hours
       <hr>
-      <input type="number" min="0" id="census"><br>
-      AM Hosptial Census
+      <input type="number" min="0" max="220" id="arrivals1pm"><br>
+      Arrivals before 1pm
+      <hr>
+      <input type="number" min="0" max="70" id="admitNoBed"><br>
+      Admissions without assigned beds
+      <hr>
+      <input type="number" min="0" max="25" id="icuBeds"><br>
+      Available ICU beds (not including CTIC or ICCU)
+      <hr>
+      <input type="number" min="0" max="99" id="waiting"><br>
+      People waiting (ambulance & public)
+      <hr>
+      <input type="number" min="0" max="8" id="waitTimeHours" class="time">:<input type="number" min="0" max="59" id="waitTimeMinutes" class="time"><br>
+      Longest wait (ambulance only)
+      <hr>
+      <input type="number" min="0" max="29" id="esi2noBed"><br>
+      ESI 2 waiting in public + ambulance
+      <hr>
+      <input type="number" min="0" max="20" id="critCarePatients"><br>
+      Critical care patients
+      <hr>
+      Surge Level: <div class="surge" id="surge">finish entering data</div>
+      <hr>
+      <select id="diversion">
+        <option>on diversion</option>
+        <option default>open</option>
+        <option>forced open</option>
+      </select><br>
+      Diversion status
+      <hr>
+      <textarea id="notes" rows="5" cols="50"></textarea><br>
+      Notes (optional)
+      <hr>
+      Surge level <i>feels</i> like
+      <select id="concordance">
+        <option value="null">same</option>
+        <option value="0">green</option>
+        <option value="1">yellow</option>
+        <option value="2">red</option>
+        <option value="3">black</option>
+      </select><br>
+      <hr>
+      <input type="text" maxlength="3" id="initials" class="initials"><br>
+      initials
       <hr>
       <button id="submit">Submit</button>
     </div>
@@ -40,7 +85,13 @@
     <div class="contacts" id="contacts">
       <h3>Contacts List</h3>
     </div>
+    <br>
+    <button id="new-contact" onclick="show_new_contact_form()">New Contact</button>
   </div>
+
+  <br>
+  <br>
+  <br>
 
 </body>
 

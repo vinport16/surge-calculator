@@ -33,6 +33,7 @@ socket.on("login failed", function(){
 
 socket.on("login success", function(){
   socket.emit("get contacts");
+  socket.emit("get last row");
 });
 
 socket.on("contact",function(contact){
