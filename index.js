@@ -16,9 +16,10 @@ var PASSWORD = process.env.PASSWORD || "pass";
 
 // initial database connection settings
 var config = {
-    "host": process.env.DATABASE_URL || 'localhost',
-    "port": 5432,
-    "database": "vincent",
+    //"host": process.env.DATABASE_URL || 'localhost',
+    //"port": 5432,
+    "connectionString": process.env.DATABASE_URL || "postgres://localhost:5432",
+    //"database": "vincent",
     "stream": new net.Stream()
 };
 var pool = new pg.Pool(config);
