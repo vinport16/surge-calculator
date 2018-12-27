@@ -6,10 +6,6 @@ contact:
   - email
   - alert threshold
 
-row:
-  - census
-  -
-
 */
 
 surge_levels = ["green","yellow","red","black"];
@@ -25,6 +21,28 @@ surge_level_select = function(id, level){
   }
   html += "</select>";
   return html;
+}
+
+make_table_header = function(row){
+  tr = "<tr>";
+  for(key in row){
+    if(row.hasOwnProperty(key)){
+      tr += "<th>"+key+"</th>";
+    }
+  }
+  tr += "</tr>";
+  return tr;
+}
+
+make_table_row = function(row){
+  tr = "<tr>";
+  for(key in row){
+    if(row.hasOwnProperty(key)){
+      tr += "<td>"+row[key]+"</td>";
+    }
+  }
+  tr += "</tr>";
+  return tr;
 }
 
 show_contact = function(contact){
@@ -87,7 +105,6 @@ delete_contact = function(id){
     contact.parentNode.removeChild(contact);
   }
 }
-
 
 
 

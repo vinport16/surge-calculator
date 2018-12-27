@@ -185,23 +185,23 @@ document.getElementById("submit").addEventListener("click",function(){
     surgeScore = level[0];
     surgeLevel = level[1];
 
-    census = document.getElementById("census").value; 
-    arrivals3hours = document.getElementById("arrivals3hours").value;
-    arrivals1pm = document.getElementById("arrivals1pm").value;
-    admitNoBed = document.getElementById("admitNoBed").value;
-    icuBeds = document.getElementById("icuBeds").value;
-    waiting = document.getElementById("waiting").value;
-    waitTimeHours = document.getElementById("waitTimeHours").value;
-    waitTimeMinutes = document.getElementById("waitTimeMinutes").value;
+    census = parseInt(document.getElementById("census").value); 
+    arrivals3hours = parseInt(document.getElementById("arrivals3hours").value);
+    arrivals1pm = parseInt(document.getElementById("arrivals1pm").value);
+    admitNoBed = parseInt(document.getElementById("admitNoBed").value);
+    icuBeds = parseInt(document.getElementById("icuBeds").value);
+    waiting = parseInt(document.getElementById("waiting").value);
+    waitTimeHours = parseInt(document.getElementById("waitTimeHours").value);
+    waitTimeMinutes = parseInt(document.getElementById("waitTimeMinutes").value);
 
-    waitTime = waitTimeMinutes + waitTimeHours * 60;
+    waitTime = parseInt(waitTimeMinutes + waitTimeHours * 60);
 
-    esi2noBed = document.getElementById("esi2noBed").value;
-    critCarePatients = document.getElementById("critCarePatients").value;
+    esi2noBed = parseInt(document.getElementById("esi2noBed").value);
+    critCarePatients = parseInt(document.getElementById("critCarePatients").value);
 
     diversion = document.getElementById("diversion").value;
     notes = document.getElementById("notes").value;
-    concordance = document.getElementById("concordance").value;
+    concordance = parseInt(document.getElementById("concordance").value);
 
     if(confirm("send data?")){
       socket.emit("create row",{census, arrivals3hours, arrivals1pm, admitNoBed, icuBeds, waiting, waitTime, esi2noBed, critCarePatients, surgeScore, surgeLevel, diversion, initials, concordance, notes});

@@ -72,16 +72,6 @@ io.on("connection", function(socket){
     }
   });
 
-  socket.on("get setup", function(){
-    if(socket.auth){
-      socket.emit("contact",{id:0,name:"Vincent",email:"vinport16@gmail.com",threshold:2});
-      socket.emit("contact",{id:0,name:"Sarah",email:"sxd100@case.edu",threshold:3});
-      socket.emit("contact",{id:0,name:"Dave",email:"dave.portelli@gmail.com",threshold:1});
-    }else{
-      socket.emit("login failed");
-    }
-  });
-
 
   // ~~ INTERACTIONS ON CONTACTS TABLE ~~ //
 
@@ -186,7 +176,6 @@ io.on("connection", function(socket){
 
   socket.on("create row", function(row){
     if(socket.auth){
-
       config["stream"] = new net.Stream();
       pool = new pg.Pool(config);
       pool.connect(function(err, client, done){
@@ -196,6 +185,7 @@ io.on("connection", function(socket){
         client.query('INSERT INTO data (census, arrivals3hours, arrivals1pm, admitNoBed, icuBeds, waiting, waitTime, esi2noBed, critCarePatients, surgeScore, surgeLevel, diversion, initials, concordance, notes, date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)',
                      [row.census, row.arrivals3hours, row.arrivals1pm, row.admitNoBed, row.icuBeds, row.waiting, row.waitTime, row.esi2noBed, row.critCarePatients, row.surgeScore, row.surgeLevel, row.diversion, row.initials, row.concordance, row.notes, new Date()], function(err, result) {
           if(err){
+            socket.emit("alert","FAILED TO LOG ROW: "+row);
             console.log(err);
           }else{
             console.log("logged data row with surge level "+row.surgeLevel);
@@ -227,6 +217,28 @@ io.on("connection", function(socket){
             console.log("retrieved row "+row.id+": Score="+row.surgeScore);
             socket.emit("last row",row);
           }
+          done();
+        });
+      });
+      pool.end();
+    }else{
+      socket.emit("login failed");
+    }
+  });
+
+
+  socket.on("get data", function(){
+    if(socket.auth){
+      config["stream"] = new net.Stream();
+      pool = new pg.Pool(config);
+      pool.connect(function(err, client, done){
+        if(err) {
+          return console.error('error fetching client from pool', err);
+        }
+        client.query("SELECT * FROM data ORDER BY ID DESC", function(err, result) {
+          rows = result.rows;
+          console.log("retrieved "+rows.length+" rows");
+          socket.emit("all data",rows);
           done();
         });
       });

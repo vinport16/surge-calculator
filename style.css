@@ -20,6 +20,12 @@ body{
   display: inline-block;
 }
 
+.data-table-shell{
+  max-width: 70vw;
+  max-height: 70vh;
+  overflow: scroll;
+}
+
 .contact-shell{
   text-align: center;
 }
@@ -68,7 +74,7 @@ input.initials{
 }
 
 input.time{
-  width:2em;
+  width:35px;
 }
 
 :disabled{
