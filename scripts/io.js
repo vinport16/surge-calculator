@@ -48,7 +48,7 @@ document.getElementById("get-data").addEventListener("click", function(){
 socket.on("all data", function(data){
   console.log(data);
 
-  out = "<table>" + make_table_header(data[0]);
+  out = "<table><th></th>" + make_table_header(data[0]);
   for(i in data){
     out += make_table_row(data[i]);
   }

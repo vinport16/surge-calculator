@@ -21,10 +21,70 @@ body{
 }
 
 .data-table-shell{
+  outline-style: solid;
+  background-color: white;
   max-width: 70vw;
   max-height: 70vh;
   overflow: scroll;
 }
+
+
+
+table {
+  border-collapse: collapse;
+  float:left;
+  border-left: 0px;
+  border-right: 0px;
+}
+
+th.rotate {
+  /* Something you can count on */
+  height: 150px;
+  white-space: nowrap;
+}
+
+th.rotate > div {
+  transform: 
+  /* Magic Numbers */
+  translate(16px, 57px)
+  /* 45 is really 360 - 45 */
+  rotate(270deg);
+  width: 40px;
+}
+th.rotate > div > span {
+  border-bottom: 1px solid #000;
+  padding: 5px 10px;
+  color:black;
+}
+td {
+  white-space: nowrap;
+  text-align: right;
+  padding: 10px 5px;
+  border: 1px solid #000;
+  min-width: 40px;
+}
+div.tab {
+  float:right;
+  width:60%;
+  overflow-x: scroll;
+  overflow-y: visible;
+  padding: 0;
+}
+
+
+.code0 {
+  background-color: rgb(220,255,220);
+}
+.code1 {
+  background-color: rgb(255,255,220);
+}
+.code2 {
+  background-color: rgb(255,220,220);
+}
+.code3 {
+  background-color: rgb(220,220,220);
+}
+
 
 .contact-shell{
   text-align: center;

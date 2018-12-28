@@ -24,21 +24,44 @@ surge_level_select = function(id, level){
 }
 
 make_table_header = function(row){
-  tr = "<tr>";
+  tr = "<thead><tr>";
   for(key in row){
     if(row.hasOwnProperty(key)){
-      tr += "<th>"+key+"</th>";
+      if(key == "date"){
+        tr += "<th class='rotate'><div><span>year</span></div></th>";
+        tr += "<th class='rotate'><div><span>month</span></div></th>";
+        tr += "<th class='rotate'><div><span>day</span></div></th>";
+        tr += "<th class='rotate'><div><span>time</span></div></th>";
+      }else{
+        tr += "<th class='rotate'><div><span>"+key+"</span></div></th>";
+      }
     }
   }
-  tr += "</tr>";
+  tr += "</tr></thead>";
   return tr;
 }
 
 make_table_row = function(row){
-  tr = "<tr>";
+  tr = "<tr class='code"+row.surgelevel+"'>";
   for(key in row){
     if(row.hasOwnProperty(key)){
-      tr += "<td>"+row[key]+"</td>";
+      if(key == "date"){
+        // split date into components
+        date = new Date(Date.parse(row[key]));
+        year = date.getFullYear();
+        month = date.getMonth()+1;
+        day = date.getDate();
+        hour = date.getHours();
+        minute = date.getMinutes();
+        tr += "<td>"+year+"</td>";
+        tr += "<td>"+month+"</td>";
+        tr += "<td>"+day+"</td>";
+        tr += "<td>"+hour+":"+minute+"</td>";
+      }else if(key == "surgelevel" || key == "concordance" && row[key] != null){
+        tr += "<td>"+surge_levels[row[key]]+"</td>";
+      }else{
+        tr += "<td>"+row[key]+"</td>";
+      }
     }
   }
   tr += "</tr>";
