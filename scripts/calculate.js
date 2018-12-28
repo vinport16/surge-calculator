@@ -179,6 +179,7 @@ document.getElementById("submit").addEventListener("click",function(){
 
   if(initials == ""){
     console.log("initials not filled in");
+    alert("please include your initials");
   }else if(calculate()){
 
     level = calculate();

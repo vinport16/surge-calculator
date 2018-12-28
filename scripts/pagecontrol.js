@@ -32,12 +32,14 @@ make_table_header = function(row){
         tr += "<th class='rotate'><div><span>month</span></div></th>";
         tr += "<th class='rotate'><div><span>day</span></div></th>";
         tr += "<th class='rotate'><div><span>time</span></div></th>";
+      }else if(key == "notes"){
+        // put notes at the end
       }else{
         tr += "<th class='rotate'><div><span>"+key+"</span></div></th>";
       }
     }
   }
-  tr += "</tr></thead>";
+  tr += "<th class='rotate'><div><span>notes</span></div></th></tr></thead>";
   return tr;
 }
 
@@ -59,12 +61,14 @@ make_table_row = function(row){
         tr += "<td>"+hour+":"+minute+"</td>";
       }else if(key == "surgelevel" || key == "concordance" && row[key] != null){
         tr += "<td>"+surge_levels[row[key]]+"</td>";
+      }else if(key == "notes"){
+        // put notes at the end
       }else{
         tr += "<td>"+row[key]+"</td>";
       }
     }
   }
-  tr += "</tr>";
+  tr += "<td>"+row.notes+"</td></tr>";
   return tr;
 }
 
