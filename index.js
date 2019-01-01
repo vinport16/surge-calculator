@@ -14,12 +14,12 @@ http.listen(port);
 // set PASSWORD in heroku config variables
 var PASSWORD = process.env.PASSWORD || "pass";
 
+// set EMAIL_PASSWORD in heroku config variables OR get it from command line argument
+var EMAIL_PASSWORD = process.env.EMAIL_PASSWORD || process.argv[2];
+
 // initial database connection settings
 var config = {
-    //"host": process.env.DATABASE_URL || 'localhost',
-    //"port": 5432,
     "connectionString": process.env.DATABASE_URL || "postgres://localhost:5432",
-    //"database": "vincent",
     "stream": new net.Stream()
 };
 var pool = new pg.Pool(config);
@@ -189,6 +189,7 @@ io.on("connection", function(socket){
             console.log(err);
           }else{
             console.log("logged data row with surge level "+row.surgeLevel);
+            notify_everyone(row);
           }
           done();
         });
@@ -214,7 +215,7 @@ io.on("connection", function(socket){
             console.log("no rows to retrieve");
             socket.emit("last row",false);
           }else{
-            console.log("retrieved row "+row.id+": Score="+row.surgeScore);
+            console.log("retrieved row "+row.id+": Score="+row.surgescore);
             socket.emit("last row",row);
           }
           done();
@@ -262,11 +263,87 @@ io.on("connection", function(socket){
 
 
 
+// sends emails
+// addr: list of recipients
+// body: text of message
+send_alert = function(addr, body){
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'surge.management.robot@gmail.com',
+      pass: EMAIL_PASSWORD
+    }
+  });
+
+  // setup email data with unicode symbols
+  let mailOptions = {
+    from: '"Surge Management Robot" <surge.management.robot@gmail.com>', // sender address
+    to: "",       // don't show who else is getting emails
+    bcc: addr,    // list of receivers (so they don't see eachother)
+    subject: '',  // Subject line
+    text: body    // plain text body
+  };
+
+  // send mail with defined transport object
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message to %s sent: %s', addr, info.response);
+  });
+};
 
 
+level_to_color = ["green","yellow","red","black"];
+
+notify_everyone = function(row){
+
+  config["stream"] = new net.Stream();
+  pool = new pg.Pool(config);
+  pool.connect(function(err, client, done){
+    if(err) {
+      return console.error('error fetching client from pool', err);
+    }
+    client.query('SELECT * FROM contacts', function(err, result) {
+      contacts = result.rows;
+      // only send to contacts who have sufficeintly low thresholds
+      contacts = contacts.filter(contact => contact.threshold <= row.surgeLevel );
+      emails = contacts.map(function(contact){ return contact.email; });
+
+      lines = [];
+      lines.push("Surge Level: "+level_to_color[row.surgeLevel]);
+      lines.push("Census: "+row.census);
+      lines.push("Arrivals 3hrs: "+row.arrivals3hours);
+      lines.push("Arrivals 1pm: "+row.arrivals1pm);
+      lines.push("Admit w/o bed: "+row.admitNoBed);
+      lines.push("ICU beds: "+row.icuBeds);
+      lines.push("Waiting: "+row.waiting);
+      lines.push("Longest wait: "+row.waitTime);
+      lines.push("ESI2 w/o bed: "+row.esi2noBed);
+      lines.push("ED is "+row.diversion);
+      lines.push("Surge Score: "+row.surgeScore);
+      lines.push("Notes: "+row.notes);
+
+      while(lines.length > 0){
+        text_body = lines.shift();
+        while(lines.length > 0 && text_body.length + lines[0].length + 1 <= 160){
+          text_body += "\n"+lines.shift();
+        }
+
+        if(emails.length > 0){
+          send_alert(emails, text_body);
+        }
+      }
+
+      done();
+    });
+  });
+  pool.end();
+
+};
 
 
-
+// send_alert(["vinport16@gmail.com","4017145717@messaging.sprintpcs.com"], "TEST EMAIL OK?");
 
 
 

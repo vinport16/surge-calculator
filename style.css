@@ -58,7 +58,7 @@ th.rotate > div > span {
 }
 td {
   white-space: nowrap;
-  text-align: right;
+  text-align: left;
   padding: 10px 5px;
   border: 1px solid #000;
   min-width: 40px;

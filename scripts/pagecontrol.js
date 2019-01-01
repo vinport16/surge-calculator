@@ -30,6 +30,7 @@ make_table_header = function(row){
       if(key == "date"){
         tr += "<th class='rotate'><div><span>year</span></div></th>";
         tr += "<th class='rotate'><div><span>month</span></div></th>";
+        tr += "<th class='rotate'><div><span>weekday</span></div></th>";
         tr += "<th class='rotate'><div><span>day</span></div></th>";
         tr += "<th class='rotate'><div><span>time</span></div></th>";
       }else if(key == "notes"){
@@ -52,11 +53,14 @@ make_table_row = function(row){
         date = new Date(Date.parse(row[key]));
         year = date.getFullYear();
         month = date.getMonth()+1;
+        week = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+        weekday = week[date.getDay()];
         day = date.getDate();
         hour = date.getHours();
         minute = date.getMinutes();
         tr += "<td>"+year+"</td>";
         tr += "<td>"+month+"</td>";
+        tr += "<td>"+weekday+"</td>";
         tr += "<td>"+day+"</td>";
         tr += "<td>"+hour+":"+minute+"</td>";
       }else if(key == "surgelevel" || key == "concordance" && row[key] != null){
