@@ -1,6 +1,7 @@
 var express = require('express');
 var sio = require('socket.io');
 var pg = require('pg');
+var fs = require('fs');
 var net = require('net');
 var nodemailer = require('nodemailer');
 var app = express();
@@ -56,6 +57,95 @@ app.get('/pagecontrol.js', function(req, res){
 
 app.get('/calculate.js', function(req, res){
   res.sendFile(__dirname + '/scripts/calculate.js');
+});
+
+app.post('/download', function(req,res){
+  if(req.headers.cookie.includes("pass="+PASSWORD) ){
+    config["stream"] = new net.Stream();
+    pool = new pg.Pool(config);
+    pool.connect(function(err, client, done){
+      if(err) {
+        return console.error('error fetching client from pool', err);
+      }
+      client.query('SELECT * FROM data ORDER BY ID DESC', function(err, result) {
+        if (err) throw err;
+
+        content = result.rows;
+
+        surge_levels = ["green","yellow","red","black"];
+
+        var text = "";
+
+        // make column headers
+        row = content[0];
+        for(key in row){
+          if(row.hasOwnProperty(key)){
+            /*if(key == "date"){
+              text += "year, ";
+              text += "month, ";
+              text += "weekday, ";
+              text += "day, ";
+              text += "time, ";
+            }else */if(key == "notes"){
+              // put notes at the end
+            }else{
+              text += key+", ";
+            }
+          }
+        }
+        text += "notes\n";
+
+
+        // add data
+
+        for(i in content){
+          row = content[i];
+          for(key in row){
+            if(row.hasOwnProperty(key)){
+              if(key == "date"){
+                date = new Date(Date.parse(row[key]));
+                text += date.toDateString()+", ";
+                /*
+                year = date.getFullYear();
+                month = date.getMonth()+1;
+                week = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+                weekday = week[date.getDay()];
+                day = date.getDate();
+                hour = date.getHours();
+                minute = date.getMinutes();
+                
+                text += year+"</td>";
+                text += month+"</td>";
+                text += weekday+"</td>";
+                text += day+"</td>";
+                text += hour+":"+minute+"</td>";
+                */
+              }else if(key == "surgelevel" || key == "concordance" && row[key] != null){
+                text += surge_levels[row[key]]+", ";
+              }else if(key == "notes"){
+                // put notes at the end
+              }else{
+                text += row[key]+", ";
+              }
+            }
+          }
+          text += replace_all(replace_all(row.notes,",","/"),"\n"," ")+"\n";
+        }
+
+        fs.writeFile ("surge_calculator_data.csv", text, function(err) { //write data back into file
+          if (err) throw err;
+          var file = __dirname + '/surge_calculator_data.csv';
+          res.download(file);     // here's where the download happens
+        });
+
+
+        done();
+      });
+    });
+    pool.end();
+  }else{
+
+  }
 });
 
 io.on("connection", function(socket){
@@ -227,7 +317,6 @@ io.on("connection", function(socket){
     }
   });
 
-
   socket.on("get data", function(){
     if(socket.auth){
       config["stream"] = new net.Stream();
@@ -249,6 +338,29 @@ io.on("connection", function(socket){
     }
   });
 
+  socket.on("delete data", function(id){
+    if(socket.auth){
+      config["stream"] = new net.Stream();
+      pool = new pg.Pool(config);
+      pool.connect(function(err, client, done){
+        if(err) {
+          socket.emit("alert","failed to delete");
+          return console.error('error fetching client from pool', err);
+        }
+        client.query('DELETE FROM data WHERE id = $1', [id], function(err, result) {
+          console.log("deleted row: id "+id);
+          socket.emit("alert","row "+id+" deleted");
+          done();
+        });
+      });
+      pool.end();
+    }else{
+      socket.emit("login failed");
+    }
+  });
+
+
+
 
   socket.on("disconnect", function(){
     console.log("socket disconnected");
@@ -260,8 +372,13 @@ io.on("connection", function(socket){
 
 
 
-
-
+// replace all instances of 'find' in string with 'replace'
+replace_all = function(string, find, replace){
+  while(string.includes(find)){
+    string = string.replace(find,replace);
+  }
+  return string;
+}
 
 // sends emails
 // addr: list of recipients
@@ -281,7 +398,8 @@ send_alert = function(addr, body){
     to: "",       // don't show who else is getting emails
     bcc: addr,    // list of receivers (so they don't see eachother)
     subject: '',  // Subject line
-    text: body    // plain text body
+    text: body,   // plain text body
+    ecoding: "base64"
   };
 
   // send mail with defined transport object
@@ -296,6 +414,7 @@ send_alert = function(addr, body){
 
 level_to_color = ["green","yellow","red","black"];
 
+// notifies all the appropriate people for a surge report
 notify_everyone = function(row){
 
   config["stream"] = new net.Stream();
@@ -341,9 +460,6 @@ notify_everyone = function(row){
   pool.end();
 
 };
-
-
-// send_alert(["vinport16@gmail.com","4017145717@messaging.sprintpcs.com"], "TEST EMAIL OK?");
 
 
 

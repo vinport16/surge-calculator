@@ -40,7 +40,9 @@ make_table_header = function(row){
       }
     }
   }
-  tr += "<th class='rotate'><div><span>notes</span></div></th></tr></thead>";
+  tr += "<th class='rotate'><div><span>notes</span></div></th>";
+  tr += "<th class='rotate'><div><span>delete</span></div></th>";
+  tr += "</tr></thead>";
   return tr;
 }
 
@@ -72,7 +74,9 @@ make_table_row = function(row){
       }
     }
   }
-  tr += "<td>"+row.notes+"</td></tr>";
+  tr += "<td>"+row.notes+"</td>";
+  tr += "<td><button onclick='delete_row("+row.id+")'>delete</button></td>";
+  tr += "</tr>";
   return tr;
 }
 
