@@ -25,7 +25,7 @@ function getCookie(cname) {
 var socket = io();
 
 if(getCookie("pass")){
-  socket.emit("pass",getCookie("pass"));
+  socket.emit("login",getCookie("pass"));
 }else{
   pass = prompt("password");
   setCookie("pass", pass, 60*24*7); //set cookie for one week
@@ -63,8 +63,16 @@ socket.on("all data", function(data){
   document.getElementById("data-table-shell").innerHTML = out;
 });
 
+socket.on("deleted row",function(){
+  socket.emit("get data");
+});
+
 socket.on("last row", function(row){
-  console.log(row);
+  prepare_input_fields(row);
+});
+
+socket.on("logged row", function(){
+  clear_input_fields();
 });
 
 
@@ -77,22 +85,4 @@ delete_row = function(id){
     socket.emit("delete data",id);
   }
 }
-
-
-
-
-
-
-function httpGetAsync(theUrl, callback)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(xmlHttp.responseText);
-    }
-    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
-    xmlHttp.send(null);
-}
-
-//httpGetAsync("/download?pass=pass",function(){});
 

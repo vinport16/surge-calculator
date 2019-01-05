@@ -23,15 +23,47 @@ surge_level_select = function(id, level){
   return html;
 }
 
+prepare_input_fields = function(row){
+  row_date = new Date(Date.parse(row.date));
+  now = new Date();
+
+  oneday = 60 * 60 * 24 * 1000;
+  if(now - row_date < oneday){
+    document.getElementById("census").value = row.census;
+  }else{
+    document.getElementById("census").value = null;
+  }
+
+  seventeen_hours = 60 * 60 * 17 * 1000;
+  if(now - row_date < seventeen_hours && ( row_date.getHours() < 6 || row_date.getHours() >= 13 ) && ( now.getHours() < 6 || now.getHours() >= 13 ) ){
+    document.getElementById("arrivals1pm").value = row.arrivals1pm;
+  }else{
+    document.getElementById("arrivals1pm").value = null;
+  }
+  console.log(now - row_date < seventeen_hours, row_date.getHours() < 6 || row_date.getHours() >= 13, now.getHours() < 6 || now.getHours() >= 13);
+}
+
+clear_input_fields = function(){
+  // reset /most/ of the input fields
+  document.getElementById("arrivals3hours").value = null;
+  document.getElementById("admitNoBed").value = null;
+  document.getElementById("icuBeds").value = null;
+  document.getElementById("waiting").value = null;
+  document.getElementById("waitTimeHours").value = null;
+  document.getElementById("waitTimeMinutes").value = null;
+  document.getElementById("esi2noBed").value = null;
+  document.getElementById("critCarePatients").value = null;
+  document.getElementById("notes").value = null;
+  document.getElementById("concordance").value = null;
+  calculate();
+}
+
 make_table_header = function(row){
   tr = "<thead><tr>";
   for(key in row){
     if(row.hasOwnProperty(key)){
       if(key == "date"){
-        tr += "<th class='rotate'><div><span>year</span></div></th>";
-        tr += "<th class='rotate'><div><span>month</span></div></th>";
-        tr += "<th class='rotate'><div><span>weekday</span></div></th>";
-        tr += "<th class='rotate'><div><span>day</span></div></th>";
+        tr += "<th class='rotate'><div><span>date</span></div></th>";
         tr += "<th class='rotate'><div><span>time</span></div></th>";
       }else if(key == "notes"){
         // put notes at the end
@@ -53,18 +85,8 @@ make_table_row = function(row){
       if(key == "date"){
         // split date into components
         date = new Date(Date.parse(row[key]));
-        year = date.getFullYear();
-        month = date.getMonth()+1;
-        week = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
-        weekday = week[date.getDay()];
-        day = date.getDate();
-        hour = date.getHours();
-        minute = date.getMinutes();
-        tr += "<td>"+year+"</td>";
-        tr += "<td>"+month+"</td>";
-        tr += "<td>"+weekday+"</td>";
-        tr += "<td>"+day+"</td>";
-        tr += "<td>"+hour+":"+minute+"</td>";
+        tr += "<td>"+date.toDateString()+"</td>";
+        tr += "<td>"+date.toTimeString()+"</td>";
       }else if(key == "surgelevel" || key == "concordance" && row[key] != null){
         tr += "<td>"+surge_levels[row[key]]+"</td>";
       }else if(key == "notes"){
@@ -142,7 +164,11 @@ delete_contact = function(id){
 }
 
 
-
+// when it's between 6AM and 1PM, disable the arrivals1pm input
+now = new Date();
+if(now.getHours() >= 6 && now.getHours() < 13){
+  document.getElementById("arrivals1pm").disabled = true;
+}
 
 
 

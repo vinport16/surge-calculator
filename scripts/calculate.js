@@ -97,7 +97,8 @@ calculate = function(){
     console.log("arrivals3hours not filled in");
   }
 
-  if(arrivals1pm.value == ""){
+  now = new Date();
+  if(arrivals1pm.value == "" && ( now.getHours() < 6 || now.getHours() >= 13 ) ){
     all_filled = false;
     console.log("arrivals1pm not filled in");
   }
@@ -188,7 +189,7 @@ document.getElementById("submit").addEventListener("click",function(){
 
     census = parseInt(document.getElementById("census").value); 
     arrivals3hours = parseInt(document.getElementById("arrivals3hours").value);
-    arrivals1pm = parseInt(document.getElementById("arrivals1pm").value);
+    arrivals1pm = parseInt(document.getElementById("arrivals1pm").value || 0); // in case it's blank
     admitNoBed = parseInt(document.getElementById("admitNoBed").value);
     icuBeds = parseInt(document.getElementById("icuBeds").value);
     waiting = parseInt(document.getElementById("waiting").value);

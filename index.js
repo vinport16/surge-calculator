@@ -80,13 +80,10 @@ app.post('/download', function(req,res){
         row = content[0];
         for(key in row){
           if(row.hasOwnProperty(key)){
-            /*if(key == "date"){
-              text += "year, ";
-              text += "month, ";
-              text += "weekday, ";
-              text += "day, ";
+            if(key == "date"){
+              text += "date, ";
               text += "time, ";
-            }else */if(key == "notes"){
+            }else if(key == "notes"){
               // put notes at the end
             }else{
               text += key+", ";
@@ -105,21 +102,7 @@ app.post('/download', function(req,res){
               if(key == "date"){
                 date = new Date(Date.parse(row[key]));
                 text += date.toDateString()+", ";
-                /*
-                year = date.getFullYear();
-                month = date.getMonth()+1;
-                week = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
-                weekday = week[date.getDay()];
-                day = date.getDate();
-                hour = date.getHours();
-                minute = date.getMinutes();
-                
-                text += year+"</td>";
-                text += month+"</td>";
-                text += weekday+"</td>";
-                text += day+"</td>";
-                text += hour+":"+minute+"</td>";
-                */
+                text += date.toTimeString()+", ";
               }else if(key == "surgelevel" || key == "concordance" && row[key] != null){
                 text += surge_levels[row[key]]+", ";
               }else if(key == "notes"){
@@ -279,6 +262,7 @@ io.on("connection", function(socket){
             console.log(err);
           }else{
             console.log("logged data row with surge level "+row.surgeLevel);
+            socket.emit("logged row");
             notify_everyone(row);
           }
           done();
@@ -349,7 +333,7 @@ io.on("connection", function(socket){
         }
         client.query('DELETE FROM data WHERE id = $1', [id], function(err, result) {
           console.log("deleted row: id "+id);
-          socket.emit("alert","row "+id+" deleted");
+          socket.emit("deleted row");
           done();
         });
       });
@@ -445,7 +429,7 @@ notify_everyone = function(row){
 
       while(lines.length > 0){
         text_body = lines.shift();
-        while(lines.length > 0 && text_body.length + lines[0].length + 1 <= 160){
+        while(lines.length > 0 && text_body.length + lines[0].length + 1 <= 110){
           text_body += "\n"+lines.shift();
         }
 
