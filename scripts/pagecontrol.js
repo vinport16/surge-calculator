@@ -40,7 +40,6 @@ prepare_input_fields = function(row){
   }else{
     document.getElementById("arrivals1pm").value = null;
   }
-  console.log(now - row_date < seventeen_hours, row_date.getHours() < 6 || row_date.getHours() >= 13, now.getHours() < 6 || now.getHours() >= 13);
 }
 
 clear_input_fields = function(){
@@ -111,6 +110,13 @@ show_contact = function(contact){
   html += "<button onclick='delete_contact("+contact.id+")'>Delete</button>";
   html += "</div>";
   document.getElementById("contacts").insertAdjacentHTML("beforeend", html);
+}
+
+get_contacts = function(){
+  button = document.getElementById("get-contacts");
+  button.parentNode.removeChild(button);
+
+  socket.emit("get contacts");
 }
 
 show_new_contact_form = function(){
