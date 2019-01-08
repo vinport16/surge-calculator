@@ -389,8 +389,7 @@ send_alert = function(addr, body){
   // setup email data with unicode symbols
   let mailOptions = {
     from: '"Surge Management Robot" <surge.management.robot@gmail.com>', // sender address
-    to: "",       // don't show who else is getting emails
-    bcc: addr,    // list of receivers (so they don't see eachother)
+    to: addr,    // list of receivers
     subject: '',  // Subject line
     text: body,   // plain text body
     ecoding: "base64"
