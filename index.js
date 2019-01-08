@@ -18,6 +18,9 @@ var PASSWORD = process.env.PASSWORD || "pass";
 // set EMAIL_PASSWORD in heroku config variables OR get it from command line argument
 var EMAIL_PASSWORD = process.env.EMAIL_PASSWORD || process.argv[2];
 
+// set time zone (# hours of offset)
+var TIMEZONE_OFFSET = 5;
+
 // initial database connection settings
 var config = {
     "connectionString": process.env.DATABASE_URL || "postgres://localhost:5432",
@@ -78,11 +81,12 @@ app.post('/download', function(req,res){
 
         // make column headers
         row = content[0];
+        text += "date, ";
+        text += "time, ";
         for(key in row){
           if(row.hasOwnProperty(key)){
             if(key == "date"){
-              text += "date, ";
-              text += "time, ";
+              // put date at the beginning
             }else if(key == "notes"){
               // put notes at the end
             }else{
@@ -97,12 +101,18 @@ app.post('/download', function(req,res){
 
         for(i in content){
           row = content[i];
+          // do date first
+          date = new Date(Date.parse(row.date));
+          // date is in UTC on production, so if we're on prod, change to EST:
+          if(PASSWORD != "pass"){
+            date.setHours(date.getHours()+TIMEZONE_OFFSET);
+          }
+          text += date.toDateString()+", ";
+          text += date.toTimeString().split(" ")[0]+", ";
           for(key in row){
             if(row.hasOwnProperty(key)){
               if(key == "date"){
-                date = new Date(Date.parse(row[key]));
-                text += date.toDateString()+", ";
-                text += date.toTimeString()+", ";
+                // do date at beginning
               }else if(key == "surgelevel" || key == "concordance" && row[key] != null){
                 text += surge_levels[row[key]]+", ";
               }else if(key == "notes"){
