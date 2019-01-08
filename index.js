@@ -19,7 +19,7 @@ var PASSWORD = process.env.PASSWORD || "pass";
 var EMAIL_PASSWORD = process.env.EMAIL_PASSWORD || process.argv[2];
 
 // set time zone (# hours of offset)
-var TIMEZONE_OFFSET = 5;
+var TIMEZONE_OFFSET = -5;
 
 // initial database connection settings
 var config = {
