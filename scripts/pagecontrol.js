@@ -89,6 +89,36 @@ make_table_header = function(row){
   return tr;
 }
 
+// get surge color from level
+// returns "same" when null (for concordance)
+get_surge_color = function(l){
+  if(l == null){
+    return "same";
+  }else{
+    return surge_levels[l];
+  }
+}
+
+minutes_to_time_string = function(min){
+  str = "";
+  if(parseInt(min/60) > 0){
+    str += parseInt(min/60);
+  }else{
+    str += "0";
+  }
+  str += ":";
+  min = min%60;
+  if(min > 9){
+    str += min;
+  }else if(min > 0){
+    str += "0";
+    str += min;
+  }else{
+    str += "00";
+  }
+  return str;
+}
+
 make_table_row = function(row){
   tr = "<tr class='code"+row.surgelevel+"'>";
   // split date into components
@@ -101,8 +131,10 @@ make_table_row = function(row){
         // put date at the beginning
       }else if(key == "id"){
         // do not include id
-      }else if(key == "surgelevel" || key == "concordance" && row[key] != null){
-        tr += "<td>"+surge_levels[row[key]]+"</td>";
+      }else if(key == "waittime"){
+        tr += "<td>"+minutes_to_time_string(row[key])+"</td>"
+      }else if(key == "surgelevel" || key == "concordance"){
+        tr += "<td>"+get_surge_color(row[key])+"</td>";
       }else if(key == "notes"){
         // put notes at the end
       }else{

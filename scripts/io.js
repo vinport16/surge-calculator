@@ -47,12 +47,10 @@ socket.on("contact",function(contact){
 });
 
 document.getElementById("get-data").addEventListener("click", function(){
-  console.log("get data");
   socket.emit("get data");
 });
 
 socket.on("all data", function(data){
-  console.log(data);
 
   out = "<table><th></th>" + make_table_header(data[0]);
   for(i in data){

@@ -404,6 +404,25 @@ send_alert = function(addr, body){
   });
 };
 
+minutes_to_time_string = function(min){
+  str = "";
+  if(parseInt(min/60) > 0){
+    str += parseInt(min/60);
+  }else{
+    str += "0";
+  }
+  str += ":";
+  min = min%60;
+  if(min > 9){
+    str += min;
+  }else if(min > 0){
+    str += "0";
+    str += min;
+  }else{
+    str += "00";
+  }
+  return str;
+}
 
 level_to_color = ["green","yellow","red","black"];
 
@@ -430,7 +449,7 @@ notify_everyone = function(row){
       lines.push("Admit w/o bed: "+row.admitNoBed);
       lines.push("ICU beds: "+row.icuBeds);
       lines.push("Waiting: "+row.waiting);
-      lines.push("Longest wait: "+row.waitTime);
+      lines.push("Longest wait: "+minutes_to_time_string(row.waitTime));
       lines.push("ESI2 w/o bed: "+row.esi2noBed);
       lines.push("ED is "+row.diversion);
       lines.push("Surge Score: "+row.surgeScore);
