@@ -3,11 +3,15 @@ level_to_color = ["green","yellow","red","black"];
 // outputs [surge_score, surge_level, surge_color]
 // note: waitTime is in minutes
 calculate_surge_score = function(census, arrivals3hours, arrivals1pm, admitNoBed, icuBeds, waiting, waitTime, esi2noBed, critCarePatients){
-  
+
   // first calculate score
   score = 0;
 
-  if(census > 539){
+  if(census > 570){
+    score += 20;
+  }else if(census > 560){
+    score += 15;
+  }else if(census > 539){
     score += 10;
   }
 
@@ -15,7 +19,9 @@ calculate_surge_score = function(census, arrivals3hours, arrivals1pm, admitNoBed
     score += 10;
   }
 
-  if(admitNoBed > 24){
+  if(admitNoBed > 35){
+    score += 20;
+  }else if(admitNoBed > 24){
     score += 15;
   }else if(admitNoBed > 9){
     score += 10;
@@ -33,7 +39,11 @@ calculate_surge_score = function(census, arrivals3hours, arrivals1pm, admitNoBed
     score += 10;
   }
 
-  if(waitTime > 120){
+  if(waitTime > 360){
+    score += 20;
+  }else if(waitTime > 240){
+    score += 15;
+  }else if(waitTime > 120){
     score += 10;
   }
 
@@ -44,7 +54,7 @@ calculate_surge_score = function(census, arrivals3hours, arrivals1pm, admitNoBed
   }
 
   if(critCarePatients > 12){
-    score += 20;
+    score += 25;
   }else if(critCarePatients > 9){
     score += 10;
   }
