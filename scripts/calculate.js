@@ -128,7 +128,12 @@ calculate = function(){
     console.log("waiting not filled in");
   }
 
-  waitTime = waitTimeHours * 60 + waitTimeMinutes;
+  if(waitTimeMinutes.value > 59){
+    all_filled = false;
+    alert("Invalid time: minutes cannot exceed 59");
+  }
+
+  waitTime = waitTimeHours.value * 60 + waitTimeMinutes.value;
   if(waitTime == ""){
     all_filled = false;
     console.log("waitTime not filled in");
@@ -147,6 +152,7 @@ calculate = function(){
   if(all_filled){
     score = calculate_surge_score(census.value, arrivals3hours.value, arrivals1pm.value, admitNoBed.value, icuBeds.value, waiting.value, waitTime, esi2noBed.value, critCarePatients.value);
     document.getElementById("surge").innerHTML = score[2];
+    document.getElementById("submit").disabled = false;
     color = "";
     switch(score[1]){
       case 0:
@@ -168,7 +174,7 @@ calculate = function(){
   }else{
     document.getElementById("surge").innerHTML = "finish entering data";
     document.body.style.backgroundColor = "";
-
+    document.getElementById("submit").disabled = true;
     return false;
   }
 }

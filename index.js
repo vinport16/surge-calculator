@@ -424,10 +424,14 @@ minutes_to_time_string = function(min){
   return str;
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 level_to_color = ["green","yellow","red","black"];
 
 // notifies all the appropriate people for a surge report
-notify_everyone = function(row){
+function notify_everyone(row){
 
   config["stream"] = new net.Stream();
   pool = new pg.Pool(config);
@@ -435,7 +439,7 @@ notify_everyone = function(row){
     if(err) {
       return console.error('error fetching client from pool', err);
     }
-    client.query('SELECT * FROM contacts', function(err, result) {
+    client.query('SELECT * FROM contacts', async function(err, result) {
       contacts = result.rows;
       // only send to contacts who have sufficeintly low thresholds
       contacts = contacts.filter(contact => contact.threshold <= row.surgeLevel );
@@ -463,6 +467,7 @@ notify_everyone = function(row){
 
         if(emails.length > 0){
           send_alert(emails, text_body);
+          await sleep(500);
         }
       }
 

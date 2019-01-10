@@ -46,6 +46,8 @@ calculate_surge_score = function(census, arrivals3hours, arrivals1pm, admitNoBed
     score += (critCarePatients-5) * 2
   }
 
+  score = Math.round(score);
+
   // now that we have the score, find the level
   level = 0;
 

@@ -114,6 +114,18 @@ button, input, select{
   font-size: 14pt;
 }
 
+button.submit{
+  border-radius: 10px;
+  height: 70px;
+  font-size: 40px;
+  background-color: rgb(190,200,255);
+}
+
+button.submit:disabled{
+  background-color: rgb(220,230,255);
+  color: rgb(140,140,140);
+}
+
 /* gets rid of those arrows on number inputs */
 /* firefox */
 input[type='number'] {
