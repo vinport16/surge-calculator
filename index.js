@@ -467,7 +467,7 @@ function notify_everyone(row){
 
         if(emails.length > 0){
           send_alert(emails, text_body);
-          await sleep(500);
+          await sleep(1000);
         }
       }
 
