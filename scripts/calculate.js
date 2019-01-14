@@ -179,19 +179,42 @@ calculate = function(){
   }
 }
 
-document.getElementById("census").addEventListener("change", function(){calculate();}); 
-document.getElementById("arrivals3hours").addEventListener("change", function(){calculate();});
-document.getElementById("arrivals1pm").addEventListener("change", function(){calculate();});
-document.getElementById("admitNoBed").addEventListener("change", function(){calculate();});
-document.getElementById("icuBeds").addEventListener("change", function(){calculate();});
-document.getElementById("waiting").addEventListener("change", function(){calculate();});
-document.getElementById("waitTimeHours").addEventListener("change", function(){calculate();});
-document.getElementById("waitTimeMinutes").addEventListener("change", function(){calculate();});
-document.getElementById("esi2noBed").addEventListener("change", function(){calculate();});
-document.getElementById("critCarePatients").addEventListener("change", function(){calculate();});
+function addEvent(evnt, elem, func) {
+   if (elem.addEventListener)  // W3C DOM
+      elem.addEventListener(evnt,func,false);
+   else if (elem.attachEvent) { // IE DOM
+      elem.attachEvent("on"+evnt, func);
+   }
+   else { // No much to do
+      elem[evnt] = func;
+   }
+}
 
+addEvent("change",document.getElementById("census"),function(){calculate();});
+addEvent("change",document.getElementById("arrivals3hours"),function(){calculate();});
+addEvent("change",document.getElementById("arrivals1pm"),function(){calculate();});
+addEvent("change",document.getElementById("admitNoBed"),function(){calculate();});
+addEvent("change",document.getElementById("icuBeds"),function(){calculate();});
+addEvent("change",document.getElementById("waiting"),function(){calculate();});
+addEvent("change",document.getElementById("waitTimeHours"),function(){calculate();});
+addEvent("change",document.getElementById("waitTimeMinutes"),function(){calculate();});
+addEvent("change",document.getElementById("esi2noBed"),function(){calculate();});
+addEvent("change",document.getElementById("critCarePatients"),function(){calculate();});
 
-document.getElementById("submit").addEventListener("click",function(){
+/*
+document.getElementById("census").addEvent("change", function(){calculate();}); 
+document.getElementById("arrivals3hours").addEvent("change", function(){calculate();});
+document.getElementById("arrivals1pm").addEvent("change", function(){calculate();});
+document.getElementById("admitNoBed").addEvent("change", function(){calculate();});
+document.getElementById("icuBeds").addEvent("change", function(){calculate();});
+document.getElementById("waiting").addEvent("change", function(){calculate();});
+document.getElementById("waitTimeHours").addEvent("change", function(){calculate();});
+document.getElementById("waitTimeMinutes").addEvent("change", function(){calculate();});
+document.getElementById("esi2noBed").addEvent("change", function(){calculate();});
+document.getElementById("critCarePatients").addEvent("change", function(){calculate();});
+*/
+
+addEvent("click",document.getElementById("submit"),function(){
   initials = document.getElementById("initials").value;
 
   if(initials == ""){
@@ -222,7 +245,7 @@ document.getElementById("submit").addEventListener("click",function(){
     concordance = parseInt(document.getElementById("concordance").value);
 
     if(confirm("send data?")){
-      socket.emit("create row",{census, arrivals3hours, arrivals1pm, admitNoBed, icuBeds, waiting, waitTime, esi2noBed, critCarePatients, surgeScore, surgeLevel, diversion, initials, concordance, notes});
+      socket.emit("create row",{census:census, arrivals3hours:arrivals3hours, arrivals1pm:arrivals1pm, admitNoBed:admitNoBed, icuBeds:icuBeds, waiting:waiting, waitTime:waitTime, esi2noBed:esi2noBed, critCarePatients:critCarePatients, surgeScore:surgeScore, surgeLevel:surgeLevel, diversion:diversion, initials:initials, concordance:concordance, notes:notes});
     }
   }
 });

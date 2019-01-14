@@ -46,9 +46,7 @@ socket.on("contact",function(contact){
   show_contact(contact);
 });
 
-document.getElementById("get-data").addEventListener("click", function(){
-  socket.emit("get data");
-});
+document.getElementById("get-data").onclick = function(){ socket.emit("get data"); };
 
 socket.on("all data", function(data){
 
