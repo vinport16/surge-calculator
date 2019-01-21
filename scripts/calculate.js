@@ -201,25 +201,17 @@ addEvent("change",document.getElementById("waitTimeMinutes"),function(){calculat
 addEvent("change",document.getElementById("esi2noBed"),function(){calculate();});
 addEvent("change",document.getElementById("critCarePatients"),function(){calculate();});
 
-/*
-document.getElementById("census").addEvent("change", function(){calculate();}); 
-document.getElementById("arrivals3hours").addEvent("change", function(){calculate();});
-document.getElementById("arrivals1pm").addEvent("change", function(){calculate();});
-document.getElementById("admitNoBed").addEvent("change", function(){calculate();});
-document.getElementById("icuBeds").addEvent("change", function(){calculate();});
-document.getElementById("waiting").addEvent("change", function(){calculate();});
-document.getElementById("waitTimeHours").addEvent("change", function(){calculate();});
-document.getElementById("waitTimeMinutes").addEvent("change", function(){calculate();});
-document.getElementById("esi2noBed").addEvent("change", function(){calculate();});
-document.getElementById("critCarePatients").addEvent("change", function(){calculate();});
-*/
 
 addEvent("click",document.getElementById("submit"),function(){
   initials = document.getElementById("initials").value;
-
+  concordance = document.getElementById("concordance").value;
+  console.log(concordance);
   if(initials == ""){
     console.log("initials not filled in");
-    alert("please include your initials");
+    alert("Please include your initials");
+  }else if(concordance == ""){
+    console.log("concordance not filled in");
+    alert("Please indicate what the surge level feels like. If it feels the same as the calculated surge level, select that level.");
   }else if(calculate()){
 
     level = calculate();
