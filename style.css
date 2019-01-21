@@ -12,6 +12,14 @@ body{
   width:40%;
 }
 
+.report{
+  display: inline-block;
+  width:70vw;
+  padding: 20px;
+  text-align: left;
+  line-height: 1.8;
+}
+
 .data-shell{
   text-align: center;
 }

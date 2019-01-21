@@ -237,7 +237,9 @@ addEvent("click",document.getElementById("submit"),function(){
     concordance = parseInt(document.getElementById("concordance").value);
 
     if(confirm("send data?")){
-      socket.emit("create row",{census:census, arrivals3hours:arrivals3hours, arrivals1pm:arrivals1pm, admitNoBed:admitNoBed, icuBeds:icuBeds, waiting:waiting, waitTime:waitTime, esi2noBed:esi2noBed, critCarePatients:critCarePatients, surgeScore:surgeScore, surgeLevel:surgeLevel, diversion:diversion, initials:initials, concordance:concordance, notes:notes});
+      row = {census:census, arrivals3hours:arrivals3hours, arrivals1pm:arrivals1pm, admitNoBed:admitNoBed, icuBeds:icuBeds, waiting:waiting, waitTime:waitTime, esi2noBed:esi2noBed, critCarePatients:critCarePatients, surgeScore:surgeScore, surgeLevel:surgeLevel, diversion:diversion, initials:initials, concordance:concordance, notes:notes};
+      socket.emit("create row", row);
+      show_report(row);
     }
   }
 });

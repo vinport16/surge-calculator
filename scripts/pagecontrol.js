@@ -159,6 +159,27 @@ show_contact = function(contact){
   document.getElementById("contacts").insertAdjacentHTML("beforeend", html);
 }
 
+show_report = function(row){
+  date = new Date();
+  text  = "<h3>Report: "+date.toDateString()+" "+minutes_to_time_string(date.getHours()*60 + date.getMinutes())+"</h3>";
+  text += "Surge Level: "+get_surge_color(row.surgeLevel)+"<br>";
+  text += "AM Hosptial Census: "+row.census+"<br>";
+  text += "Arrivals in the last 3 hours: "+row.arrivals3hours+"<br>";
+  text += "Arrivals before 1pm: "+row.arrivals1pm+"<br>";
+  text += "All admits in ED (w&w/o beds assigned): "+row.admitNoBed+"<br>";
+  text += "Available ICU beds (not including CTIC or ICCU): "+row.icuBeds+"<br>";
+  text += "People waiting (ambulance & public): "+row.waiting+"<br>";
+  text += "Longest wait (ambulance only): "+minutes_to_time_string(row.waitTime)+"<br>";
+  text += "ESI 2 waiting in public + ambulance: "+row.esi2noBed+"<br>";
+  text += "Critical care patients: "+row.critCarePatients+"<br>";
+  text += "Diversion status: "+row.diversion+"<br>";
+  text += "Notes: "+row.notes+"<br>";
+  console.log(text);
+
+  document.getElementById("calc-shell");
+  document.getElementById("report").innerHTML = text;
+}
+
 get_contacts = function(){
   button = document.getElementById("get-contacts");
   button.parentNode.removeChild(button);
