@@ -455,6 +455,7 @@ function notify_everyone(row){
       lines.push("Waiting: "+row.waiting);
       lines.push("Longest wait: "+minutes_to_time_string(row.waitTime));
       lines.push("ESI2 w/o bed: "+row.esi2noBed);
+      lines.push("Crit Care: "+row.critCarePatients);
       lines.push("ED is "+row.diversion);
       lines.push("Surge Score: "+row.surgeScore);
       lines.push("Notes: "+row.notes);
