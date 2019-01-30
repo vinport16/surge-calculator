@@ -453,7 +453,7 @@ function notify_everyone(row){
       lines.push("Admit w/o bed: "+row.admitNoBed);
       lines.push("ICU beds: "+row.icuBeds);
       lines.push("Waiting: "+row.waiting);
-      lines.push("Longest wait: "+minutes_to_time_string(row.waitTime));
+      lines.push("ESI2 wait: "+minutes_to_time_string(row.waitTime));
       lines.push("ESI2 w/o bed: "+row.esi2noBed);
       lines.push("Crit Care: "+row.critCarePatients);
       lines.push("ED is "+row.diversion);
