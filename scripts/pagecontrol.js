@@ -32,12 +32,24 @@ phone_carrier_select = function(id){
   return html;
 }
 
+get_last_time_of_census = function(time){
+  if(time.getHours()*60 + time.getMinutes() > 5*60 + 30){
+    // time - time.getHours = midnight, + 5.5hrs = 5:30 AM
+    return new Date(time - ((time.getHours()*60 + time.getMinutes())*60 + time.getSeconds())*1000 + (5.5 * 60 * 60 * 1000));
+  }else{
+    // time - ((24 + 5.5) hrs - time.getHours) = 5:30 AM
+    return new Date(time + ((24 + 5.5) * 60 * 60 * 1000) - (((time.getHours()*60 + time.getMinutes())*60 + time.getSeconds())*1000));
+  }
+}
+
 prepare_input_fields = function(row){
   row_date = new Date(Date.parse(row.date));
   now = new Date();
 
   oneday = 60 * 60 * 24 * 1000;
-  if(now - row_date < oneday){
+  //the time that the census was from: 5:30AM in the last 24 hrs
+  timeOfCensus = get_last_time_of_census(row_date);
+  if(now - timeOfCensus < oneday){
     document.getElementById("census").value = row.census;
   }else{
     document.getElementById("census").value = null;
