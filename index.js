@@ -34,8 +34,9 @@ pool.connect(function(err, client, done){
   // if there is not a contacts table, then create one
   client.query('CREATE TABLE IF NOT EXISTS contacts(id SERIAL PRIMARY KEY, name VARCHAR, email VARCHAR, threshold INT)', function(err, result){
   });
+
   // if there is not a data table, then create one
-  client.query('CREATE TABLE IF NOT EXISTS data(id SERIAL PRIMARY KEY, census INT, arrivals3hours INT, arrivals1pm INT, admitNoBed INT, icuBeds INT, waiting INT, waitTime INT, esi2noBed INT, critCarePatients INT, surgeScore INT, surgeLevel INT, diversion VARCHAR(15), initials VARCHAR(3), concordance INT, notes TEXT, date TIMESTAMPTZ)', function(err, result){
+  client.query('CREATE TABLE IF NOT EXISTS data(id SERIAL PRIMARY KEY, census INT, nedoc INT, arrivals3hours INT, arrivals1pm INT, admitNoBed INT, icuBeds INT, waiting INT, waitTime INT, esi2noBed INT, critCarePatients INT, surgeScore INT, surgeLevel INT, diversion VARCHAR(15), initials VARCHAR(3), concordance INT, notes TEXT, date TIMESTAMPTZ)', function(err, result){
     done();
   });
 });
@@ -265,8 +266,8 @@ io.on("connection", function(socket){
         if(err) {
           return console.error('error fetching client from pool', err);
         }
-        client.query('INSERT INTO data (census, arrivals3hours, arrivals1pm, admitNoBed, icuBeds, waiting, waitTime, esi2noBed, critCarePatients, surgeScore, surgeLevel, diversion, initials, concordance, notes, date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)',
-                     [row.census, row.arrivals3hours, row.arrivals1pm, row.admitNoBed, row.icuBeds, row.waiting, row.waitTime, row.esi2noBed, row.critCarePatients, row.surgeScore, row.surgeLevel, row.diversion, row.initials, row.concordance, row.notes, new Date()], function(err, result) {
+        client.query('INSERT INTO data (census, nedoc, arrivals3hours, arrivals1pm, admitNoBed, icuBeds, waiting, waitTime, esi2noBed, critCarePatients, surgeScore, surgeLevel, diversion, initials, concordance, notes, date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)',
+                     [row.census, row.nedoc, row.arrivals3hours, row.arrivals1pm, row.admitNoBed, row.icuBeds, row.waiting, row.waitTime, row.esi2noBed, row.critCarePatients, row.surgeScore, row.surgeLevel, row.diversion, row.initials, row.concordance, row.notes, new Date()], function(err, result) {
           if(err){
             socket.emit("alert","FAILED TO LOG ROW: "+row);
             console.log(err);
@@ -448,6 +449,7 @@ function notify_everyone(row){
       lines = [];
       lines.push("Surge Level: "+level_to_color[row.surgeLevel]);
       lines.push("Census: "+row.census);
+      lines.push("NEDOC: "+row.nedoc);
       lines.push("Arrivals 3hrs: "+row.arrivals3hours);
       lines.push("Arrivals 1pm: "+row.arrivals1pm);
       lines.push("Admit w/o bed: "+row.admitNoBed);

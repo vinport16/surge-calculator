@@ -2,7 +2,7 @@ level_to_color = ["green","yellow","red","black"];
 
 // outputs [surge_score, surge_level, surge_color]
 // note: waitTime is in minutes
-calculate_surge_score = function(census, arrivals3hours, arrivals1pm, admitNoBed, icuBeds, waiting, waitTime, esi2noBed, critCarePatients){
+calculate_surge_score = function(census, nedoc, arrivals3hours, arrivals1pm, admitNoBed, icuBeds, waiting, waitTime, esi2noBed, critCarePatients){
 
   // first calculate score
   score = 0;
@@ -85,6 +85,7 @@ calculate_surge_score = function(census, arrivals3hours, arrivals1pm, admitNoBed
 // show the result on the page
 calculate = function(){
   census = document.getElementById("census"); 
+  nedoc = document.getElementById("nedoc");
   arrivals3hours = document.getElementById("arrivals3hours");
   arrivals1pm = document.getElementById("arrivals1pm");
   admitNoBed = document.getElementById("admitNoBed");
@@ -100,6 +101,11 @@ calculate = function(){
   if(census.value == null){
     all_filled = false;
     console.log("census not filled in");
+  }
+
+  if(nedoc.value == null){
+    all_filled = false;
+    console.log("nedoc not filled in");
   }
 
   if(arrivals3hours.value == ""){
@@ -150,7 +156,7 @@ calculate = function(){
   }
 
   if(all_filled){
-    score = calculate_surge_score(census.value, arrivals3hours.value, arrivals1pm.value, admitNoBed.value, icuBeds.value, waiting.value, waitTime, esi2noBed.value, critCarePatients.value);
+    score = calculate_surge_score(census.value, nedoc.value, arrivals3hours.value, arrivals1pm.value, admitNoBed.value, icuBeds.value, waiting.value, waitTime, esi2noBed.value, critCarePatients.value);
     document.getElementById("surge").innerHTML = score[2];
     document.getElementById("submit").disabled = false;
     color = "";
@@ -191,6 +197,7 @@ function addEvent(evnt, elem, func) {
 }
 
 addEvent("change",document.getElementById("census"),function(){calculate();});
+addEvent("change",document.getElementById("nedoc"),function(){calculate();});
 addEvent("change",document.getElementById("arrivals3hours"),function(){calculate();});
 addEvent("change",document.getElementById("arrivals1pm"),function(){calculate();});
 addEvent("change",document.getElementById("admitNoBed"),function(){calculate();});
@@ -219,6 +226,7 @@ addEvent("click",document.getElementById("submit"),function(){
     surgeLevel = level[1];
 
     census = parseInt(document.getElementById("census").value); 
+    nedoc = parseInt(document.getElementById("nedoc").value);
     arrivals3hours = parseInt(document.getElementById("arrivals3hours").value);
     arrivals1pm = parseInt(document.getElementById("arrivals1pm").value || 0); // in case it's blank
     admitNoBed = parseInt(document.getElementById("admitNoBed").value);
@@ -237,7 +245,7 @@ addEvent("click",document.getElementById("submit"),function(){
     concordance = parseInt(document.getElementById("concordance").value);
 
     if(confirm("send data?")){
-      row = {census:census, arrivals3hours:arrivals3hours, arrivals1pm:arrivals1pm, admitNoBed:admitNoBed, icuBeds:icuBeds, waiting:waiting, waitTime:waitTime, esi2noBed:esi2noBed, critCarePatients:critCarePatients, surgeScore:surgeScore, surgeLevel:surgeLevel, diversion:diversion, initials:initials, concordance:concordance, notes:notes};
+      row = {census:census, nedoc:nedoc, arrivals3hours:arrivals3hours, arrivals1pm:arrivals1pm, admitNoBed:admitNoBed, icuBeds:icuBeds, waiting:waiting, waitTime:waitTime, esi2noBed:esi2noBed, critCarePatients:critCarePatients, surgeScore:surgeScore, surgeLevel:surgeLevel, diversion:diversion, initials:initials, concordance:concordance, notes:notes};
       socket.emit("create row", row);
       show_report(row);
     }

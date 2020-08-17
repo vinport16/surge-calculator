@@ -65,6 +65,7 @@ prepare_input_fields = function(row){
 
 clear_input_fields = function(){
   // reset /most/ of the input fields
+  document.getElementById("nedoc").value = null;
   document.getElementById("arrivals3hours").value = null;
   document.getElementById("admitNoBed").value = null;
   document.getElementById("icuBeds").value = null;
