@@ -17,6 +17,9 @@ var PASSWORD = process.env.PASSWORD || "pass";
 
 // set EMAIL_PASSWORD in heroku config variables OR get it from command line argument
 var EMAIL_PASSWORD = process.env.EMAIL_PASSWORD || process.argv[2];
+// if email is being blocked:
+//   allow less secure apps: https://myaccount.google.com/lesssecureapps?pli=1
+//   go to this link and do the capatcha: https://accounts.google.com/DisplayUnlockCaptcha
 
 // set time zone (# hours of offset)
 var TIMEZONE_OFFSET = -5;
