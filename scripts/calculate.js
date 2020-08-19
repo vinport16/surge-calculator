@@ -7,31 +7,37 @@ calculate_surge_score = function(census, nedoc, arrivals3hours, arrivals1pm, adm
   // first calculate score
   score = 0;
 
-  if(census > 570){
-    score += 20;
-  }else if(census > 560){
-    score += 15;
-  }else if(census > 539){
+  if(census > 539){
     score += 10;
   }
 
-  if(arrivals3hours > 59 || arrivals1pm > 159){
+  if(nedoc > 180){
+    score += 5;
+  }else if(nedoc > 140){
+    score += 4;
+  }else if(nedoc > 100){
+    score += 3;
+  }else if(nedoc > 60){
+    score += 2;
+  }else if(nedoc > 20){
+    score += 1;
+  }
+
+  if(arrivals3hours > 20 || arrivals1pm > 175){
     score += 10;
   }
 
-  if(admitNoBed > 35){
-    score += 20;
-  }else if(admitNoBed > 24){
-    score += 15;
+  if(admitNoBed > 19){
+    score += 10;
   }else if(admitNoBed > 9){
-    score += 10;
+    score += 5;
   }
 
   if(icuBeds < 6){
     score += 15;
   }
 
-  if(waiting > 49){
+  if(waiting > 50){
     score += 30;
   }else if(waiting > 39){
     score += 20;
@@ -39,11 +45,7 @@ calculate_surge_score = function(census, nedoc, arrivals3hours, arrivals1pm, adm
     score += 10;
   }
 
-  if(waitTime > 360){
-    score += 20;
-  }else if(waitTime > 240){
-    score += 15;
-  }else if(waitTime > 120){
+  if(waitTime > 120){
     score += 10;
   }
 
@@ -53,8 +55,8 @@ calculate_surge_score = function(census, nedoc, arrivals3hours, arrivals1pm, adm
     score += 10;
   }
 
-  if(critCarePatients > 12){
-    score += 25;
+  if(critCarePatients > 13){
+    score += 20;
   }else if(critCarePatients > 9){
     score += 10;
   }
@@ -62,11 +64,11 @@ calculate_surge_score = function(census, nedoc, arrivals3hours, arrivals1pm, adm
   // now that we have the score, find the level
   level = 0;
 
-  if(score >= 65){
+  if(score > 64){
     level = 3;
-  }else if(score >= 40){
+  }else if(score > 40){
     level = 2;
-  }else if(score >= 20){
+  }else if(score > 20){
     level = 1;
   }else{
     level = 0;
