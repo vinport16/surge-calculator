@@ -81,7 +81,6 @@ calculate_surge_score = function(census, nedoc, arrivals3hours, arrivals1pm, adm
 
 }
 
-
 // check if all the data is entered,
 // pass it into the calculate function,
 // show the result on the page
@@ -100,38 +99,38 @@ calculate = function(){
 
   all_filled = true;
 
-  if(census.value == null){
+  if(emptyInput(census.value)){
     all_filled = false;
     console.log("census not filled in");
   }
 
-  if(nedoc.value == null){
+  if(emptyInput(nedoc.value)){
     all_filled = false;
     console.log("nedoc not filled in");
   }
 
-  if(arrivals3hours.value == ""){
+  if(emptyInput(arrivals3hours.value)){
     all_filled = false;
     console.log("arrivals3hours not filled in");
   }
 
   now = new Date();
-  if(arrivals1pm.value == "" && ( now.getHours() < 6 || now.getHours() >= 13 ) ){
+  if(emptyInput(arrivals1pm.value) && ( now.getHours() < 6 || now.getHours() >= 13 ) ){
     all_filled = false;
     console.log("arrivals1pm not filled in");
   }
 
-  if(admitNoBed.value == ""){
+  if(emptyInput(admitNoBed.value)){
     all_filled = false;
     console.log("admitNoBed not filled in");
   }
 
-  if(icuBeds.value == ""){
+  if(emptyInput(icuBeds.value)){
     all_filled = false;
     console.log("icuBeds not filled in");
   }
 
-  if(waiting.value == ""){
+  if(emptyInput(waiting.value)){
     all_filled = false;
     console.log("waiting not filled in");
   }
@@ -142,17 +141,17 @@ calculate = function(){
   }
 
   waitTime = waitTimeHours.value * 60 + waitTimeMinutes.value;
-  if(waitTime == ""){
+  if(emptyInput(waitTime)){
     all_filled = false;
     console.log("waitTime not filled in");
   }
 
-  if(esi2noBed.value == ""){
+  if(emptyInput(esi2noBed.value)){
     all_filled = false;
     console.log("esi2noBed not filled in");
   }
 
-  if(critCarePatients.value == ""){
+  if(emptyInput(critCarePatients.value)){
     all_filled = false;
     console.log("critCarePatients not filled in");
   }
@@ -185,6 +184,10 @@ calculate = function(){
     document.getElementById("submit").disabled = true;
     return false;
   }
+}
+
+function emptyInput(value){
+  return value == null || value == "";
 }
 
 function addEvent(evnt, elem, func) {
