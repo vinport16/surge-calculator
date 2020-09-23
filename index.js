@@ -455,7 +455,7 @@ function notify_everyone(row){
       lines.push("NEDOC: "+row.nedoc);
       lines.push("Arrivals 3hrs: "+row.arrivals3hours);
       lines.push("Arrivals 1pm: "+row.arrivals1pm);
-      lines.push("Admit w/o bed: "+row.admitNoBed);
+      lines.push("Admits: "+row.admitNoBed);
       lines.push("ICU beds: "+row.icuBeds);
       lines.push("Waiting: "+row.waiting);
       lines.push("ESI2 wait: "+minutes_to_time_string(row.waitTime));
