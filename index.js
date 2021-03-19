@@ -6,7 +6,7 @@ var net = require('net');
 var nodemailer = require('nodemailer');
 var app = express();
 var http = require('http').createServer(app);
-var io = sio(http);
+var io = sio().listen(http,{cookie:false});
 
 // runs on heroku or localhost:8080
 var port = process.env.PORT || 8080;

@@ -3,7 +3,7 @@ function setCookie(cname, cvalue, minutes) {
     var d = new Date();
     d.setTime(d.getTime() + (minutes * 60 * 1000));
     var expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    document.cookie = cname + "=" + cvalue + ";" + expires + "; SameSite=None; Secure; path=/";
 }
 
 // reads a cookie
