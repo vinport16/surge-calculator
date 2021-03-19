@@ -29,6 +29,10 @@ var config = {
     "connectionString": process.env.DATABASE_URL || "postgres://localhost:5432",
     "stream": new net.Stream()
 };
+if(process.env.DATABASE_URL){
+  // set this for prod
+  config.ssl = {rejectUnauthorized: false}
+}
 var pool = new pg.Pool(config);
 pool.connect(function(err, client, done){
   if(err) {
