@@ -56,7 +56,7 @@ app.get('/', function(req, res){
 
 app.get('/favicon.ico', function(req, res){
   console.log("sending it!!");
-  res.sendFile(__dirname + '/black_star.png');
+  res.sendFile(__dirname + '/icon.ico');
 });
 
 app.get('/style.css', function(req, res){
