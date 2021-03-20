@@ -163,8 +163,10 @@ io.on("connection", function(socket){
     if(pass === PASSWORD){
       socket.auth = true;
       socket.emit("login success");
+      console.log("success!!");
     }else{
       socket.emit("login failed");
+      console.log("failure :(");
     }
   });
 
@@ -173,18 +175,22 @@ io.on("connection", function(socket){
 
 
   socket.on("get contacts", function(){
+    console.log("... getting contacts", socket.auth);
     if(socket.auth){
-
-      config["stream"] = new net.Stream();
+      console.log("... starting to send contacts");
+      config["stream"] =  new net.Stream();
       pool = new pg.Pool(config);
       pool.connect(function(err, client, done){
         if(err) {
+          console.log("... database error?");
           return console.error('error fetching client from pool', err);
         }
+        console.log("... doing query");
         client.query('SELECT * FROM contacts ORDER BY id', function(err, result) {
           contacts = result.rows;
 
           for(var i = 0; i < contacts.length; i++){
+            console.log("sending contact!!");
             socket.emit("contact",contacts[i]);
           }
 

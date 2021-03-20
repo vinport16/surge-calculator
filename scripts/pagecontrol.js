@@ -198,6 +198,7 @@ get_contacts = function(){
   button.parentNode.removeChild(button);
 
   socket.emit("get contacts");
+  console.log("getting contacts......");
 }
 
 show_new_contact_form = function(){
