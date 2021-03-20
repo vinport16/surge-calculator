@@ -49,6 +49,7 @@ pool.connect(function(err, client, done){
     done();
   });
 });
+console.log(pool);
 pool.end();
 
 
