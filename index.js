@@ -44,6 +44,8 @@ pool.connect(function(err, client, done){
 
   // if there is not a data table, then create one
   client.query('CREATE TABLE IF NOT EXISTS data(id SERIAL PRIMARY KEY, census INT, nedoc INT, arrivals3hours INT, arrivals1pm INT, admitNoBed INT, icuBeds INT, waiting INT, waitTime INT, esi2noBed INT, critCarePatients INT, surgeScore INT, surgeLevel INT, diversion VARCHAR(15), initials VARCHAR(3), concordance INT, notes TEXT, date TIMESTAMPTZ)', function(err, result){
+    console.log(err);
+    console.log(result);
     done();
   });
 });
