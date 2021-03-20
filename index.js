@@ -39,7 +39,7 @@ client.connect();
 
 client.query('CREATE TABLE IF NOT EXISTS contacts(id SERIAL PRIMARY KEY, name VARCHAR, email VARCHAR, threshold INT)', (err, res) => {
   if (err){
-    console.warn(err);
+    console.log(err);
   }
   console.log("success?",res);
   client.end();
