@@ -25,6 +25,26 @@ var EMAIL_PASSWORD = process.env.EMAIL_PASSWORD || process.argv[2];
 var TIMEZONE_OFFSET = -5;
 
 // initial database connection settings
+
+const { Client } = require('pg');
+
+const client = new Client({
+  connectionString: process.env.DATABASE_URL || "postgres://localhost:5432",
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+client.connect();
+
+client.query('CREATE TABLE IF NOT EXISTS contacts(id SERIAL PRIMARY KEY, name VARCHAR, email VARCHAR, threshold INT)', (err, res) => {
+  if (err){
+    console.warn(err);
+  }
+  console.log("success?",res);
+  client.end();
+});
+
 var config = {
     "connectionString": process.env.DATABASE_URL || "postgres://localhost:5432",
     "stream": new net.Stream()
@@ -44,12 +64,9 @@ pool.connect(function(err, client, done){
 
   // if there is not a data table, then create one
   client.query('CREATE TABLE IF NOT EXISTS data(id SERIAL PRIMARY KEY, census INT, nedoc INT, arrivals3hours INT, arrivals1pm INT, admitNoBed INT, icuBeds INT, waiting INT, waitTime INT, esi2noBed INT, critCarePatients INT, surgeScore INT, surgeLevel INT, diversion VARCHAR(15), initials VARCHAR(3), concordance INT, notes TEXT, date TIMESTAMPTZ)', function(err, result){
-    console.log(err);
-    console.log(result);
     done();
   });
 });
-console.log(pool);
 pool.end();
 
 
