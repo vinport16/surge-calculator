@@ -31,7 +31,7 @@ var config = {
 };
 if(process.env.DATABASE_URL){
   // set this for prod
-  config.ssl = {rejectUnauthorized: false}
+  // config.ssl = {rejectUnauthorized: false}
 }
 var pool = new pg.Pool(config);
 pool.connect(function(err, client, done){
