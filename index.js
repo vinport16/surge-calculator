@@ -203,18 +203,21 @@ io.on("connection", function(socket){
       }
     });
     
-    console.log("x. connecting client");
-    client.connect();
+    try {
+      console.log("x. connecting client");
+      const client = await pool.connect();
 
-    console.log("x. querying client");
-    client.query('CREATE TABLE IF NOT EXISTS contacts(id SERIAL PRIMARY KEY, name VARCHAR, email VARCHAR, threshold INT)', (err, res) => {
-      if (err){
-        console.log("y. ...");
-        console.log(err);
-      }
-      console.log("x. Success",res);
-      client.end();
-    });
+      console.log("x. getting result");
+      const result = await client.query('SELECT * FROM contacts');
+
+      const results = { 'results': (result) ? result.rows : null};
+      console.log("x. ",results)
+      client.release();
+      console.log("x. client released");
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
 
 
     console.log("... getting contacts", socket.auth);
