@@ -195,6 +195,14 @@ io.on("connection", function(socket){
 
 
   socket.on("get contacts", function(){
+
+    console.log("x. make new client");
+    client = new Client({
+      connectionString: process.env.DATABASE_URL || "postgres://localhost:5432",
+      ssl: {
+        rejectUnauthorized: false
+      }
+    });
     
     console.log("x. connecting client");
     client.connect();
@@ -209,7 +217,7 @@ io.on("connection", function(socket){
       client.end();
     });
 
-    
+
     console.log("... getting contacts", socket.auth);
     if(socket.auth){
       config["stream"] =  new net.Stream();
