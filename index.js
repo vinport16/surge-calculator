@@ -195,22 +195,35 @@ io.on("connection", function(socket){
 
 
   socket.on("get contacts", function(){
+    
+    console.log("x. connecting client");
+    client.connect();
+
+    console.log("x. querying client");
+    client.query('CREATE TABLE IF NOT EXISTS contacts(id SERIAL PRIMARY KEY, name VARCHAR, email VARCHAR, threshold INT)', (err, res) => {
+      if (err){
+        console.log("y. ...");
+        console.log(err);
+      }
+      console.log("x. Success",res);
+      client.end();
+    });
+
+    
     console.log("... getting contacts", socket.auth);
     if(socket.auth){
-      console.log("... starting to send contacts");
       config["stream"] =  new net.Stream();
       pool = new pg.Pool(config);
       pool.connect(function(err, client, done){
         if(err) {
-          console.log("... database error?");
+          console.log("database error.");
           return console.error('error fetching client from pool', err);
         }
-        console.log("... doing query");
         client.query('SELECT * FROM contacts ORDER BY id', function(err, result) {
           contacts = result.rows;
 
           for(var i = 0; i < contacts.length; i++){
-            console.log("sending contact!!");
+            console.log("sending contact");
             socket.emit("contact",contacts[i]);
           }
 
