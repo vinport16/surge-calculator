@@ -28,7 +28,7 @@ var TIMEZONE_OFFSET = -5;
 
 const { Client } = require('pg');
 
-const client = new Client({
+let client = new Client({
   connectionString: process.env.DATABASE_URL || "postgres://localhost:5432",
   ssl: {
     rejectUnauthorized: false
@@ -75,7 +75,6 @@ app.get('/', function(req, res){
 });
 
 app.get('/favicon.ico', function(req, res){
-  console.log("sending it!!");
   res.sendFile(__dirname + '/icon.ico');
 });
 
