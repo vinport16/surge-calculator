@@ -183,6 +183,8 @@ async function get_da_db(query){
   });
   
   try {
+    config["stream"] = new net.Stream();
+    pool = new pg.Pool(config);
     console.log("x. connecting client");
     const client = await pool.connect();
 
