@@ -154,34 +154,6 @@ app.post('/download', function(req,res){
   }
 });
 
-async function get_da_db(query){
-  console.log("x. make new client");
-  let client = new Client({
-    connectionString: process.env.DATABASE_URL || "postgres://localhost:5432",
-    ssl: {
-      rejectUnauthorized: false
-    }
-  });
-  
-  try {
-    config["stream"] = new net.Stream();
-    pool = new pg.Pool(config);
-    console.log("x. connecting client");
-    const client = await pool.connect();
-
-    console.log("x. getting result");
-    const result = await client.query(query);//'SELECT * FROM contacts');
-
-    const results = { 'results': (result) ? result.rows : null};
-    console.log("x. ",results);
-    client.release();
-    console.log("x. client released");
-  } catch (err) {
-    console.error(err);
-    res.send("Error " + err);
-  }
-}
-
 io.on("connection", function(socket){
   socket.auth = false;
   console.log("socket connected");
@@ -203,21 +175,17 @@ io.on("connection", function(socket){
 
 
   socket.on("get contacts", function(){
-    //get_da_db('SELECT * FROM contacts');
-    console.log("... getting contacts", socket.auth);
     if(socket.auth){
       config["stream"] =  new net.Stream();
       pool = new pg.Pool(config);
       pool.connect(function(err, client, done){
         if(err) {
-          console.log("database error.");
           return console.error('error fetching client from pool', err);
         }
         client.query('SELECT * FROM contacts ORDER BY id', function(err, result) {
           contacts = result.rows;
 
           for(var i = 0; i < contacts.length; i++){
-            console.log("sending contact");
             socket.emit("contact",contacts[i]);
           }
 
