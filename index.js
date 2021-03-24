@@ -191,8 +191,8 @@ async function get_da_db(query){
 
     const results = { 'results': (result) ? result.rows : null};
     console.log("x. ",results);
-    client.release();
-    console.log("x. client released");
+    //client.release();
+    console.log("x. client NOT released");
   } catch (err) {
     console.error(err);
     res.send("Error " + err);
