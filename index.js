@@ -26,33 +26,11 @@ var TIMEZONE_OFFSET = -5;
 
 // initial database connection settings
 
-const { Client } = require('pg');
-
-let client = new Client({
-  connectionString: process.env.DATABASE_URL || "postgres://localhost:5432",
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-client.connect();
-
-client.query('CREATE TABLE IF NOT EXISTS contacts(id SERIAL PRIMARY KEY, name VARCHAR, email VARCHAR, threshold INT)', (err, res) => {
-  if (err){
-    console.log(err);
-  }
-  console.log("success?",res);
-  client.end();
-});
-
 var config = {
     "connectionString": process.env.DATABASE_URL || "postgres://localhost:5432",
     "stream": new net.Stream()
 };
-if(process.env.DATABASE_URL){
-  // set this for prod
-  // config.ssl = {rejectUnauthorized: false}
-}
+
 var pool = new pg.Pool(config);
 pool.connect(function(err, client, done){
   if(err) {
@@ -68,6 +46,28 @@ pool.connect(function(err, client, done){
   });
 });
 pool.end();
+
+const { Pool2 } = require('pg');
+const pool2 = new Pool2({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+app.get('/db', async (req, res) => {
+    try {
+      const client = await pool.connect();
+      const result = await client.query('SELECT * FROM contacts');
+      const results = { 'results': (result) ? result.rows : null};
+      res.send(results);
+      client.release();
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+});
+
 
 
 app.get('/', function(req, res){
@@ -222,7 +222,7 @@ io.on("connection", function(socket){
 
 
   socket.on("get contacts", function(){
-    get_da_db('SELECT * FROM contacts');
+    //get_da_db('SELECT * FROM contacts');
     console.log("... getting contacts", socket.auth);
     if(socket.auth){
       config["stream"] =  new net.Stream();
@@ -243,7 +243,7 @@ io.on("connection", function(socket){
           done();
         });
       });
-      //pool.end();
+      pool.end();
 
     }else{
       socket.emit("login failed");
