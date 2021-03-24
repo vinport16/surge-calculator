@@ -47,26 +47,7 @@ pool.connect(function(err, client, done){
 });
 pool.end();
 
-const { Pool2 } = require('pg');
-const pool2 = new Pool2({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
 
-app.get('/db', async (req, res) => {
-    try {
-      const client = await pool.connect();
-      const result = await client.query('SELECT * FROM contacts');
-      const results = { 'results': (result) ? result.rows : null};
-      res.send(results);
-      client.release();
-    } catch (err) {
-      console.error(err);
-      res.send("Error " + err);
-    }
-});
 
 
 
