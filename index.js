@@ -159,14 +159,11 @@ io.on("connection", function(socket){
   console.log("socket connected");
 
   socket.on("login", function(pass){
-    console.log("login attempt with password: "+pass);
     if(pass === PASSWORD){
       socket.auth = true;
       socket.emit("login success");
-      console.log("success!!");
     }else{
       socket.emit("login failed");
-      console.log("failure :(");
     }
   });
 
@@ -414,7 +411,7 @@ send_alert = function(addr, body){
     if (error) {
       return console.log(error);
     }
-    console.log('Message to %s sent: %s', addr, info.response);
+    console.log('Message sent to %s', addr);
   });
 };
 
@@ -482,8 +479,13 @@ function notify_everyone(row){
         }
 
         if(emails.length > 0){
-          send_alert(emails, text_body);
-          await sleep(6000);
+
+          // send each email individually to avoid Sprint throttling
+
+          emails.forEach(function(email, index){
+            send_alert([email], text_body);
+          });
+          await sleep(1000);
         }
       }
 
