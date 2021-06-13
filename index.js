@@ -480,12 +480,14 @@ function notify_everyone(row){
 
         if(emails.length > 0){
 
-          // send each email individually to avoid Sprint throttling
+          // send each email individually + with pauses to avoid Sprint throttling
 
-          emails.forEach(function(email, index){
-            send_alert([email], text_body);
-          });
-          await sleep(1000);
+          for(let e = 0; e < emails.length; e++){
+            send_alert([emails[e]], text_body);
+            await sleep(200);
+          }
+          // put some time between message 1, 2, 3
+          await sleep(500);
         }
       }
 
