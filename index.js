@@ -484,10 +484,10 @@ function notify_everyone(row){
 
           for(let e = 0; e < emails.length; e++){
             send_alert([emails[e]], text_body);
-            await sleep(200);
+            await sleep(3000);
           }
           // put some time between message 1, 2, 3
-          await sleep(500);
+          await sleep(3000);
         }
       }
 
