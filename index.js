@@ -472,6 +472,9 @@ function notify_everyone(row){
       lines.push("Surge Score: "+row.surgeScore);
       lines.push("Notes: "+row.notes);
 
+      // chop up text into pieces that fit in an SMS
+      text_blobs = [];
+
       while(lines.length > 0){
         text_body = lines.shift();
         while(lines.length > 0 && text_body.length + lines[0].length + 1 <= 110){
@@ -481,15 +484,28 @@ function notify_everyone(row){
         if(emails.length > 0){
 
           // send each email individually + with pauses to avoid Sprint throttling
+          text_blobs.push(text_body);
 
+          /*
           for(let e = 0; e < emails.length; e++){
             send_alert([emails[e]], text_body);
             await sleep(3000);
           }
           // put some time between message 1, 2, 3
           await sleep(3000);
+          */
         }
       }
+
+      // send the messages to each email
+      
+      for(let e = 0; e < emails.length; e++){
+        for(let tb = 0; tb < text_blobs.length; tb++){
+          send_alert([emails[e]], text_blobs[tb]);
+          await sleep(3000);
+        }
+      }
+
 
       done();
     });
