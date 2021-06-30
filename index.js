@@ -486,8 +486,9 @@ function notify_everyone(row){
       for(let e = 0; e < emails.length; e++){
         for(let tb = 0; tb < text_blobs.length; tb++){
           send_alert([emails[e]], text_blobs[tb]);
-          await sleep(3000);
+          await sleep(5000);
         }
+        await sleep(5000);
       }
 
 
