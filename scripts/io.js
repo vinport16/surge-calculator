@@ -70,6 +70,9 @@ socket.on("logged row", function(){
   clear_input_fields();
 });
 
+socket.on("disconnect", function(reason){
+  alert("Communication with server disconnected: " + reason + "\nRefresh the page to submit or retrieve data");
+})
 
 socket.on("alert", function(message){
   alert(message);
