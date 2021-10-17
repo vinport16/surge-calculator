@@ -2,12 +2,12 @@ level_to_color = ["green","yellow","red","black"];
 
 // outputs [surge_score, surge_level, surge_color]
 // note: waitTime is in minutes
-calculate_surge_score = function(census, nedoc, arrivals3hours, arrivals1pm, admitNoBed, icuBeds, waiting, waitTime, esi2noBed, critCarePatients){
+calculate_surge_score = function(occupancy, nedoc, arrivals3hours, arrivals1pm, admitNoBed, icuBeds, waiting, waitTime, esi2noBed, critCarePatients){
 
   // first calculate score
   score = 0;
 
-  if(census > 539){
+  if(occupancy > 90){
     score += 10;
   }
 
@@ -85,7 +85,7 @@ calculate_surge_score = function(census, nedoc, arrivals3hours, arrivals1pm, adm
 // pass it into the calculate function,
 // show the result on the page
 calculate = function(){
-  census = document.getElementById("census"); 
+  occupancy = document.getElementById("occupancy"); 
   nedoc = document.getElementById("nedoc");
   arrivals3hours = document.getElementById("arrivals3hours");
   arrivals1pm = document.getElementById("arrivals1pm");
@@ -99,65 +99,70 @@ calculate = function(){
 
   all_filled = true;
 
-  if(emptyInput(census.value)){
+  messages = [];
+
+  if(!validInput(occupancy)){
     all_filled = false;
-    console.log("census not filled in");
+    messages.push("occupancy outside valid range");
   }
 
-  if(emptyInput(nedoc.value)){
+  if(!validInput(nedoc)){
     all_filled = false;
-    console.log("nedoc not filled in");
+    messages.push("nedoc outside valid range");
   }
 
-  if(emptyInput(arrivals3hours.value)){
+  if(!validInput(arrivals3hours)){
     all_filled = false;
-    console.log("arrivals3hours not filled in");
+    messages.push("arrivals3hours outside valid range");
   }
 
   now = new Date();
-  if(emptyInput(arrivals1pm.value) && ( now.getHours() < 6 || now.getHours() >= 13 ) ){
+  if(!validInput(arrivals1pm) && ( now.getHours() < 6 || now.getHours() >= 13 ) ){
     all_filled = false;
-    console.log("arrivals1pm not filled in");
+    messages.push("arrivals1pm outside valid range");
   }
 
-  if(emptyInput(admitNoBed.value)){
+  if(!validInput(admitNoBed)){
     all_filled = false;
-    console.log("admitNoBed not filled in");
+    messages.push("admitNoBed outside valid range");
   }
 
-  if(emptyInput(icuBeds.value)){
+  if(!validInput(icuBeds)){
     all_filled = false;
-    console.log("icuBeds not filled in");
+    messages.push("icuBeds outside valid range");
   }
 
-  if(emptyInput(waiting.value)){
+  if(!validInput(waiting)){
     all_filled = false;
-    console.log("waiting not filled in");
+    messages.push("waiting outside valid range");
   }
 
   if(waitTimeMinutes.value > 59){
     all_filled = false;
     alert("Invalid time: minutes cannot exceed 59");
+    waitTimeMinutes.value = null;
   }
 
   waitTime = waitTimeHours.value * 60 + waitTimeMinutes.value;
   if(emptyInput(waitTime)){
     all_filled = false;
-    console.log("waitTime not filled in");
+    messages.push("waitTime not filled in");
   }
 
-  if(emptyInput(esi2noBed.value)){
+  if(!validInput(esi2noBed)){
     all_filled = false;
-    console.log("esi2noBed not filled in");
+    messages.push("esi2noBed outside valid range");
   }
 
-  if(emptyInput(critCarePatients.value)){
+  if(!validInput(critCarePatients)){
     all_filled = false;
-    console.log("critCarePatients not filled in");
+    messages.push("critCarePatients outside valid range");
   }
+
+  document.getElementById("error_messages").innerText = messages.join("\n")
 
   if(all_filled){
-    score = calculate_surge_score(census.value, nedoc.value, arrivals3hours.value, arrivals1pm.value, admitNoBed.value, icuBeds.value, waiting.value, waitTime, esi2noBed.value, critCarePatients.value);
+    score = calculate_surge_score(occupancy.value, nedoc.value, arrivals3hours.value, arrivals1pm.value, admitNoBed.value, icuBeds.value, waiting.value, waitTime, esi2noBed.value, critCarePatients.value);
     document.getElementById("surge").innerHTML = score[2];
     document.getElementById("submit").disabled = false;
     color = "";
@@ -190,6 +195,15 @@ function emptyInput(value){
   return value == null || value == "";
 }
 
+function validInput(element){
+  empty = element.value == null || element.value == "";
+  in_range = true;
+  if(element.type == "number" && element.max != null){
+    in_range = parseInt(element.value) <= parseInt(element.max) && parseInt(element.value) >= parseInt(element.min);
+  }
+  return !empty && in_range;
+}
+
 function addEvent(evnt, elem, func) {
    if (elem.addEventListener)  // W3C DOM
       elem.addEventListener(evnt,func,false);
@@ -201,7 +215,7 @@ function addEvent(evnt, elem, func) {
    }
 }
 
-addEvent("change",document.getElementById("census"),function(){calculate();});
+addEvent("change",document.getElementById("occupancy"),function(){calculate();});
 addEvent("change",document.getElementById("nedoc"),function(){calculate();});
 addEvent("change",document.getElementById("arrivals3hours"),function(){calculate();});
 addEvent("change",document.getElementById("arrivals1pm"),function(){calculate();});
@@ -230,7 +244,7 @@ addEvent("click",document.getElementById("submit"),function(){
     surgeScore = level[0];
     surgeLevel = level[1];
 
-    census = parseInt(document.getElementById("census").value); 
+    occupancy = parseInt(document.getElementById("occupancy").value); 
     nedoc = parseInt(document.getElementById("nedoc").value);
     arrivals3hours = parseInt(document.getElementById("arrivals3hours").value);
     arrivals1pm = parseInt(document.getElementById("arrivals1pm").value || 0); // in case it's blank
@@ -250,7 +264,7 @@ addEvent("click",document.getElementById("submit"),function(){
     concordance = parseInt(document.getElementById("concordance").value);
 
     if(confirm("send data?")){
-      row = {census:census, nedoc:nedoc, arrivals3hours:arrivals3hours, arrivals1pm:arrivals1pm, admitNoBed:admitNoBed, icuBeds:icuBeds, waiting:waiting, waitTime:waitTime, esi2noBed:esi2noBed, critCarePatients:critCarePatients, surgeScore:surgeScore, surgeLevel:surgeLevel, diversion:diversion, initials:initials, concordance:concordance, notes:notes};
+      row = {occupancy:occupancy, nedoc:nedoc, arrivals3hours:arrivals3hours, arrivals1pm:arrivals1pm, admitNoBed:admitNoBed, icuBeds:icuBeds, waiting:waiting, waitTime:waitTime, esi2noBed:esi2noBed, critCarePatients:critCarePatients, surgeScore:surgeScore, surgeLevel:surgeLevel, diversion:diversion, initials:initials, concordance:concordance, notes:notes};
       socket.emit("create row", row);
       show_report(row);
     }

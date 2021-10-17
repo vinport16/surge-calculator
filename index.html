@@ -13,10 +13,10 @@
     <div class="calculator">
       <hr>
       <!--
-      row.census, row.nedoc row.arrivals3hours, row.arrivals1pm, row.admitNoBed, row.icuBeds, row.waiting, row.waitTime, row.esi2noBed, row.critCarePatients, row.surgeLevel, row.diversion, row.initials, row.concordance, row.notes
+      row.occupancy, row.nedoc row.arrivals3hours, row.arrivals1pm, row.admitNoBed, row.icuBeds, row.waiting, row.waitTime, row.esi2noBed, row.critCarePatients, row.surgeLevel, row.diversion, row.initials, row.concordance, row.notes
       -->
-      <input type="number" min="0" max="700" id="census"><br>
-      AM Hospital Census
+      <input type="number" min="0" max="100" id="occupancy">%<br>
+      AM Hospital Occupancy
       <hr>
       <input type="number" min="0" max="200" id="nedoc"><br>
       NEDOC Score
@@ -70,6 +70,7 @@
       initials
       <hr>
       <button id="submit" class="submit" disabled>Submit</button>
+      <div id="error_messages" style="color: pink"></div>
     </div>
     <div id="report" class="report">
     </div>

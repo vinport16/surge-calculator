@@ -50,9 +50,9 @@ prepare_input_fields = function(row){
   //the time that the census was from: 5:30AM in the last 24 hrs
   timeOfCensus = get_last_time_of_census(row_date);
   if(now - timeOfCensus < oneday){
-    document.getElementById("census").value = row.census;
+    document.getElementById("occupancy").value = row.occupancy;
   }else{
-    document.getElementById("census").value = null;
+    document.getElementById("occupancy").value = null;
   }
 
   seventeen_hours = 60 * 60 * 17 * 1000;
@@ -176,7 +176,7 @@ show_report = function(row){
   date = new Date();
   text  = "<h3>Report: "+date.toDateString()+" "+minutes_to_time_string(date.getHours()*60 + date.getMinutes())+"</h3>";
   text += "Surge Level: "+get_surge_color(row.surgeLevel)+"<br>";
-  text += "AM Hosptial Census: "+row.census+"<br>";
+  text += "AM Hosptial Occupancy: "+row.occupancy+"%<br>";
   text += "Arrivals in the last 3 hours: "+row.arrivals3hours+"<br>";
   text += "Arrivals before 1pm: "+row.arrivals1pm+"<br>";
   text += "All admits in ED (w&w/o beds assigned): "+row.admitNoBed+"<br>";
