@@ -16,7 +16,7 @@
     "net": "^1.0.2",
     "nodemailer": ">=6.4.16",
     "pg": "^8.5.1",
-    "socket.io": ">=2.2.0",
+    "socket.io": ">=4.5.4",
     "xmlhttprequest-ssl": ">=1.6.2",
     "ws": ">=7.4.6"
   }
